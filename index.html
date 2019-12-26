@@ -61,6 +61,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-List" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/26/List/" class="article-date">
+  <time datetime="2019-12-26T15:32:48.000Z" itemprop="datePublished">2019-12-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/26/List/">List</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>A few days ago, l have learned the lists in Python.</p>
+<p>Then, I practised 3 questions.</p>
+<p>First of all, for a given list which has only positive integers in it, if the element in it is an odd number, then add one so that it becomes an even number. For example, if the given list is [1,2,3,4,5,6], then the returned list should be [2,2,4,4,6,6]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spam = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(spam)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> spam[i] % <span class="number">2</span> !=<span class="number">0</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        spam[i] = spam[i] + <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (spam)</span></pre></td></tr></table></figure>
+
+<p>Using a ‘for’ loop, each element can be judged whether it is an odd number. If it is, the original number is replaced by the new even number.</p>
+<p>Secondly, I wrote a program code to create a list by concatenating a given list which range goes from 1 to n. For example, if the given list is [‘p’,’q’] and n=5, then the output should be [‘p1’,’q1’,’p2’,’q2’,’p3’,’q3’,’p4’,’q4’,’p5’,’q5’]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spam=[]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'enter a number'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">c=input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,int(c)+<span class="number">1</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    a = <span class="string">'p'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    b = <span class="string">'q'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    spam = spam + [a] + [b]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (spam)</span></pre></td></tr></table></figure>
+
+<p>Then, I realized that this program code has a practical use. If the an retailer needs n different commodities with corresponding price, the tags can be printed using this program code.</p>
+<p>Finally, I wrote a program code which can accept two input lists and returns a new list which contains only the unique elements from both sides.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">b = [<span class="number">1</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">9</span>,<span class="number">7</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">set (a+b)</span></pre></td></tr></table></figure>
+
+<p>The output is like [1,2,3,4,5,6,7,8,9]. This shows how powerful the method of function ‘set’ is ! It can find the unique elements in a list and rearrange them from the smallest to the biggest one.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/12/26/List/" data-id="ck4mwkv4x0000bgva43hvfzq7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Loops" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/12/24/Loops/" class="article-date">
@@ -96,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck4k0qu680002pwvafc5md8z0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck4mwkv5h0004bgvad4ce4w2t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -147,7 +199,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/12/hello-world/" data-id="ck4k0qu5n0000pwvah9go4bke" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/12/hello-world/" data-id="ck4mwkv5j0005bgva6m9a9ick" class="article-share-link">Share</a>
       
       
     </footer>
@@ -200,7 +252,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/10/The-feelings-after-attending-the-BPho/" data-id="ck4k0qu6b0003pwva7gt7aywu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/10/The-feelings-after-attending-the-BPho/" data-id="ck4mwkv570001bgvae5vo15iq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BPho/" rel="tag">BPho</a></li></ul>
@@ -239,7 +291,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/08/Markdown%E8%AF%AD%E6%B3%95/" data-id="ck4k0qu610001pwvac6tn8bzz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/08/Markdown%E8%AF%AD%E6%B3%95/" data-id="ck4mwkv5e0003bgva8wxx7f92" class="article-share-link">Share</a>
       
       
     </footer>
@@ -272,7 +324,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/BPho/" style="font-size: 10px;">BPho</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a>
+      <a href="/tags/BPho/" style="font-size: 10px;">BPho</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a>
     </div>
   </div>
 
@@ -292,6 +344,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/12/26/List/">List</a>
+          </li>
         
           <li>
             <a href="/2019/12/24/Loops/">Loops</a>
