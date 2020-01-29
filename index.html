@@ -343,17 +343,17 @@
       
         
           
-            <p>Recently, I learnt about some uses of ‘dictionary’ in Python.</p>
-<p>Then, I wrote a programme to construct a menu. The code is shown below.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'TP CAFE'</span>.center(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'--------------------'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'1. CAFE'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'2. Milk Tea'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'3. Ice Cream'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'4. Report'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'5. Quit'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">menu=[<span class="string">'0'</span>,<span class="string">'CAFE'</span>,<span class="string">'Milk Tea'</span>,<span class="string">'Ice Cream'</span>,<span class="string">'Report'</span>,<span class="string">'Quit'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">order = &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'1'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'2'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'3'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'-----------------'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">tstamp = time.strftime(<span class="string">"%Y-%m-%d %H:%M:%S"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">print(tstamp)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'which one?'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    number = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">5</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (<span class="string">'Close...'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">4</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">1</span> <span class="keyword">or</span> int(number) == <span class="number">2</span> <span class="keyword">or</span> int(number) == <span class="number">3</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (<span class="string">'how many '</span>+ menu[int(number)]+<span class="string">' do you want?'</span> )</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">        quantity = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">        order[number] = order[number] + int(quantity)                <span class="comment">#update the dictionary</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'CAFE:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'1'</span>]) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Milk Tea:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'2'</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Ice Cream:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'3'</span>])</span></pre></td></tr></table></figure>
-
-<p>In the first 7 lines, the categories of snakes are printed, during the processo of which the ‘center’ and ‘ljust’ methods are used to adjust the position of the text. In the following 6 lines, I construct a list called ‘menu’, which is used to include all kinds of snakes. A list is used due to the fact that there is an automatic mapping between the order and the corresponding snake, which makes it easier to call the element.</p>
-<p>Then, the time is obtained from system, followed by a ‘while’ loop. By the way, the ‘while’ loop is used, because it allows users to input as many times as they want. Afterwards, ‘if’ conditions are used to decide which item the user chooses. In the last ‘if’, the ‘order’ is treated as a ‘dictionary’, the ‘keys’ of which is the order number, and the value of which is the quantity of the chosen snake. At the end of the ‘if’ condition, the quantity of the snake chosen is updated.</p>
-<p>Finally, if the report is required to be printed, i.e. number 4 in the menu is chosen, the quantity is printed with corresponding snakes. If the user doesn’t want to have the report, i.e. number 5 is chosen, the interface will be closed. By the way, the first condition is to judge whether the number is  5, followed by 4, and then 1,2,3, otherwise, all the codes will be executed till 4 and 5, which makes the condition meaningless.</p>
-<p>The result of the programme is shown below.</p>
-<p><a href="https://imgchr.com/i/1u1N5j" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/01/27/1u1N5j.md.png" alt="1u1N5j.md.png"></a> </p>
-
-          
+          Recently, I learnt about some uses of ‘dictionary’ in Python.
+Then, I wrote a programme to construct a menu. The code is shown below.
+1print('TP CAFE'
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/27/Dictionary/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -493,14 +493,17 @@
       
         
           
-            <p>Today, finally, I got the silver award for the 2019 BPho. </p>
-<p><img src="https://s2.ax1x.com/2020/01/09/lf9UT1.jpg" alt="lf9UT1.jpg"></p>
-<p>Looking at the certificate, I had many words to say. Although it is only a silver award, it is quite unique for me. I have known this competition since the summer holiday in 2019. Having a first look at the past paper of BPho, I nearly can’t do any of those questions, because I only knew a little from my IGCSE course, which was absolutely not enough. Then I decided to try my best to work out as many questions as possible. It was really a tough time for me, especially at the beginning. I went to school at daytime, so the only time for me was the evening. Every day, I felt so exhausted after a busy school day, but for the BPho, for my dream, I kept telling myself ‘Come on !’. A few weeks later, I managed to do some of the questions, and I felt a little proud for myself. </p>
-<p>On 16th of November, 2019, I attended the BPho. After getting the paper, I focused on my paper and did not think about anything else. As time passed by, the questions became more difficult, and at some instant, I was a little bit impatient, because there were more and more questions that I can’t manage  to do, but later on, I told myself ‘Calm down! Try your best, and it will be fine’. Therefore, one question successfully reminded me of a question about the spring oscillator, which I have done before, which inspired me a lot. I still remembered that question, which was about letting a double planks connected by two strings falling from a height, and the two strings will make the planks to do simple harmonic motion. This gave me a lot of confidence, and encouraged me to do more questions. Although it was difficult to pay 100% attention throughout the 160 minutes, and there were some questions I did wrong which I should have done it correctly, I was appreciated when the competition has finished, because I applied at least 70% of what I have learnt. Meanwhile, I felt a little bit upset, because I thought there would be some questions about the electric circuits in section 2, such as the Kirchhoff’s law and the Wheatstone bridge, but they did not appear in the paper.</p>
-<p>Now, I got the result. I was fortunate, and I want to say thank you to my father, who helped me a lot during the preparation of the BPho, and of course, I want to say thank you to myself. It is me who kept challenging the extreme and never gave up.</p>
-<p>This silver award is just a starting point. There is still a long way to go. Well done and keep it up!</p>
+          Today, finally, I got the silver award for the 2019 BPho. 
 
-          
+Looking at the certificate, I had many words to say. Although it is only a silver award, i
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/09/Feelings-after-getting-the-award/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -640,29 +643,16 @@
       
         
           
-            <p>Recently, I learnt some further knowledge about the list in python and do some more exercises.</p>
-<p>First of all, I wrote a code to help determine the price of the metro 1 tickets. If the customer enter the starting station and the terminal station, this program can automatically work out the price of the tickets based on the price interval. The code is shown below:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">station = [<span class="string">'迈皋桥'</span>,<span class="string">'动物园'</span>,<span class="string">'南京站'</span>,<span class="string">'新模范马路'</span>,<span class="string">'玄武门'</span>,<span class="string">'鼓楼'</span>,<span class="string">'珠江路'</span>,<span class="string">'新街口'</span>,<span class="string">'张府园'</span>,<span class="string">'三山街'</span>,<span class="string">'中华门'</span>,<span class="string">'安德门'</span>,<span class="string">'天龙寺'</span>,<span class="string">'软件大道'</span>,<span class="string">'花神庙'</span>,<span class="string">'南京南站'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'Please enter the starting station'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">a = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Please enter the terminal station'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">b = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">c = station.index(b) - station.index(a)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c &lt;= <span class="number">2</span>:                                                    <span class="comment">#Between 1-2 stops，3 yuan</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    print(<span class="string">'It costs 3 yuan'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c &gt; <span class="number">2</span> <span class="keyword">and</span> c &lt;= <span class="number">8</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'It costs 2 yuan'</span>)                                       <span class="comment">#Between 3-8 stops，2 yuan</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c &gt; <span class="number">8</span> <span class="keyword">and</span> c &lt;= <span class="number">11</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'It costs 3 yuan'</span>)                                       <span class="comment">#Between 9-11 stops，3 yuan</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> c &gt; <span class="number">11</span> <span class="keyword">and</span> c &lt;= <span class="number">15</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'It costs 4 yuan'</span>)                                       <span class="comment">#Between 12-15 stops，4 yuan</span></span></pre></td></tr></table></figure>
-
-<p>The main point in this code is the ‘index’ method, which can return the position of the element in the list, so that the number of stops can be calculated, and therefore it can be compared with the price interval.</p>
-<p>The second code I wrote was about ‘Narcissistic number’ (水仙花数) , which means the 3-digit number equals to the sum of its own digits each raised to the power of the number of digits. </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">100</span>,<span class="number">1000</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    hundreds = int(i/<span class="number">100</span>)                             </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    decade = int(i/<span class="number">10</span>) - hundreds*<span class="number">10</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    unit = i - hundreds*<span class="number">100</span> - decade*<span class="number">10</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> hundreds**<span class="number">3</span> + decade**<span class="number">3</span> + unit**<span class="number">3</span> == hundreds*<span class="number">100</span> + decade*<span class="number">10</span> + unit:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">        print(i)</span></pre></td></tr></table></figure>
-
-<p>I think the main point here is to separate the 3 digits of the 3-digit number. Actually, this is more to do with the ‘for’ loop.</p>
-<p>The third code was to find the most relevant movie according to the customer’s preference. This can be done using the dot product of the vector. Assuming that there are only 3 characters which can describe a movie, which are ‘comedies’, ‘romantics’, and ‘action’, and there are up to 5 marks indicating the level of each character. For instance, if the movie is full of comedy and nothing to do with romantic, a few action shoots, then the score should be 5,0,3. Hence, the customer can enter the level of preference in each character, and the program can help him/her find the best one between movie 1 and movie 2.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Please enter your preference in terms of comedies, romantic movies and action movies'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">customer_preference = []</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">comedies = input ()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">romantic_movies = input ()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">action_movies = input ()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">customer_preference = [comedies] + [romantic_movies] + [action_movies]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">m1 = [<span class="number">4</span>,<span class="number">5</span>,<span class="number">1</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">m2 = [<span class="number">5</span>,<span class="number">1</span>,<span class="number">5</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">dot_product_1 = <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">dot_product_2 = <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(customer_preference)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">    dot_product_1 = dot_product_1 + int(m1[i])*int(customer_preference[i])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    dot_product_2 = dot_product_2 + int(m2[i])*int(customer_preference[i])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> dot_product_1 &gt; dot_product_2:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'We recomend movie 1'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> dot_product_2 &gt; dot_product_1:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'We recomend movie 2'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> dot_product_2 == dot_product_1:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'Both movies are the same'</span>)</span></pre></td></tr></table></figure>
-
-<p>The fourth one I did was to find the number of ‘C’ character in a given DNA. </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">DNA = [<span class="string">'ATGCGGACCTATTTTCGAT'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">number = <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(DNA[<span class="number">0</span>])):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> DNA[<span class="number">0</span>][i] == <span class="string">'C'</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">        number = number + <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (number)</span></pre></td></tr></table></figure>
-
-<p>I think the main point here is to separate each element of DNA, and then make a judgement.</p>
-<p><img src="https://s2.ax1x.com/2020/01/09/lWv1AK.jpg" alt="lWv1AK.jpg"></p>
-<p>Finally, I wrote a code, using Monte Carlo method to find the shaded area D.  Monte Carlo method is basically to generate 1000 points randomly. The probability of the 1000 points landing on the shaded area is approximately the area of the shaded region, given that ‘l’ equals to 1 in the figure.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">x = np.random.rand(<span class="number">1000</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">y = np.random.rand(<span class="number">1000</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">m=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">n=<span class="number">1000</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(x)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> y[i] &lt; x[i]**<span class="number">2</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        m = m + <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (m/n)</span></pre></td></tr></table></figure>
-
-<p>In the codes above, x and y are the coordinates generated randomly. The letter ‘m’ stands for the number of points landing on the shaded region, while the letter ‘n’ stands for the total number of points. This can be done due to the fact that the probability of points landing on region D equals the area of D divided by the area of the square, which is 1 in this case. Actually, the larger the sample size, the more accurate the results will be. Later on, I have known that the advantage of the  Monte Carlo method is that when the calculus doesn’t work, it still can be applied.</p>
-
-          
+          Recently, I learnt some further knowledge about the list in python and do some more exercises.
+First of all, I wrote a code to help determine the pric
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/09/List-2/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -802,22 +792,17 @@
       
         
           
-            <p>A few days ago, l have learned the lists in Python.</p>
-<p>Then, I practised 3 questions.</p>
-<p>First of all, for a given list which has only positive integers in it, if the element in it is an odd number, then add one so that it becomes an even number. For example, if the given list is [1,2,3,4,5,6], then the returned list should be [2,2,4,4,6,6]</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spam = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(spam)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> spam[i] % <span class="number">2</span> !=<span class="number">0</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">        spam[i] = spam[i] + <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (spam)</span></pre></td></tr></table></figure>
-
-<p>Using a ‘for’ loop, each element can be judged whether it is an odd number. If it is, the original number is replaced by the new even number.</p>
-<p>Secondly, I wrote a program code to create a list by concatenating a given list which range goes from 1 to n. For example, if the given list is [‘p’,’q’] and n=5, then the output should be [‘p1’,’q1’,’p2’,’q2’,’p3’,’q3’,’p4’,’q4’,’p5’,’q5’]</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spam=[]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'enter a number'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">c=input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,int(c)+<span class="number">1</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    a = <span class="string">'p'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    b = <span class="string">'q'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    spam = spam + [a] + [b]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (spam)</span></pre></td></tr></table></figure>
-
-<p>Then, I realized that this program code has a practical use. If the an retailer needs n different commodities with corresponding price, the tags can be printed using this program code.</p>
-<p>Finally, I wrote a program code which can accept two input lists and returns a new list which contains only the unique elements from both sides.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">b = [<span class="number">1</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">9</span>,<span class="number">7</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">set (a+b)</span></pre></td></tr></table></figure>
-
-<p>The output is like [1,2,3,4,5,6,7,8,9]. This shows how powerful the method of function ‘set’ is ! It can find the unique elements in a list and rearrange them from the smallest to the biggest one.</p>
-
-          
+          A few days ago, l have learned the lists in Python.
+Then, I practised 3 questions.
+First of all, for a given list which has only positive integers in 
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/26/List/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -957,17 +942,15 @@
       
         
           
-            <p>Last week, I have learned 2 different types of loops in Python, which are ‘for’ loop and ‘while’ loop. I think the main difference between these 2 loops are that ‘for’ loops can deal with the situation where the number of loops is known, and ‘while’ loops are chosen if the number of loops is unknown.</p>
-<p>Later, I did some practise. For example, I wrote some codes to display the pattern like this.<img src="C:%5CUsers%5Cadmin%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20191224230216397.png" alt="image-20191224230216397"></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">6</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (i,<span class="number">1</span>,i,i**<span class="number">2</span>,i**<span class="number">3</span>)</span></pre></td></tr></table></figure>
-
-<p>After writing these codes, I realized that if you want to print in a line, just use comma to separate different items, or add (end =’’) .</p>
-<p>In the following day, I wrote a program to show the multiplication table like this.<a href="https://imgchr.com/i/lP5QCq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/24/lP5QCq.md.png" alt="lP5QCq.md.png"></a></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">10</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range (<span class="number">1</span>,(i+<span class="number">1</span>)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (str(i) + <span class="string">'*'</span> + str(j) + <span class="string">'='</span>, i*j,end = <span class="string">' '</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">''</span>)</span></pre></td></tr></table></figure>
-
-<p>This is an example of a nested loop. The inside part will be executed first, and then the outside part.  Adding (print(‘’)) in the last line is a very smart idea, because the end of each line will be occupied by a blank, so that the next figure begins in the next line.</p>
-
-          
+          Last week, I have learned 2 different types of loops in Python, which are ‘for’ loop and ‘while’ loop. I think the main difference between these 2 loo
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/24/Loops/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1107,21 +1090,21 @@
       
         
           
-            <p>Hello, everyone! This is my first blog. </p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure>
+          Hello, everyone! This is my first blog. 
+Quick StartCreate a new post1$ hexo new "My New Post"
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure>
+More info: Writing
+Run server1$ hexo server
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
+More info
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/12/hello-world/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1261,25 +1244,15 @@
       
         
           
-            <p>On November 15th, I attended the BPho Physics competition. Although the content of the test was a little bit hard, I learned so much from the exam itself and the process of preparing for it. </p>
-<p>At the beginning, facing so many difficult questions, I didn’t know what to do. As I was an AS level student, some of the questions are the ones that I hadn’t met before. As a result, after solving some questions, I decided to separate all the questions from 2008 to 2018 into 5 categories in Section 1 and 8 categories in Section 2.</p>
-<p><a href="https://imgse.com/i/QDLzM8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLzM8.png" alt="QDLzM8.png"></a><br><a href="https://imgse.com/i/QDLjRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLjRP.png" alt="QDLjRP.png"></a></p>
-<p>Also, I made some comments, which is about some of my thinking process, on the side of the question.<img src="https://s2.ax1x.com/2019/12/10/QDOwod.png" alt="QDOwod.png"></p>
-<p>After taking part in this exam, I have learned 3 good habits: </p>
-<ul>
-<li><p>Being persistent.  During the learning, not everything can be achieved without any obstacles. Although, once I wanted to give up, I kept telling myself ‘try again, try again’. Luckily, I did it, and regardless of the outcome, this spirit inspired me a lot.</p>
-</li>
-<li><p>Being confident. At the beginning, I was not confident at all, because I can solve few problems. As time went by, I began to make some progress, so I became more confident. Latter,  I found that the more confident you are, the better the outcome will be, vice versa.</p>
-</li>
-<li><p>Being ambitious. Before doing a task, a target should be built up, which guided me when I was hesitated. Setting up a higher goal gives me many incentives to learn.</p>
-<p>What is more, after doing a lot of questions, I found that Physics was quite interesting. Many things in our daily lives can be explained by Physics. For example, one day, on my way to school, a car passed by with its trumpet on. The pitch of which changed as the car moving. A week later, I knew this is called the Doppler Effect.</p>
-</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvSsK.png" alt="QDvSsK.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvwo4.png" alt="QDvwo4.png"></p>
-<p>Physics is very interesting!</p>
-
-          
+          On November 15th, I attended the BPho Physics competition. Although the content of the test was a little bit hard, I learned so much from the exam its
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/10/The-feelings-after-attending-the-BPho/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1419,9 +1392,16 @@
       
         
           
-            <p>Hello!</p>
+          Hello!
 
           
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/12/08/Markdown%E8%AF%AD%E6%B3%95/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
