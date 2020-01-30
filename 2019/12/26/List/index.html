@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Gu Yuxuan&#39;s blog">
 <meta property="og:description" content="A few days ago, l have learned the lists in Python. Then, I practised 3 questions. First of all, for a given list which has only positive integers in it, if the element in it is an odd number, then ad">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-01-26T01:50:24.691Z">
+<meta property="og:updated_time" content="2020-01-30T11:06:23.537Z">
 <meta name="twitter:card" content="summary">
 
 
@@ -349,11 +349,11 @@
 <p>Secondly, I wrote a program code to create a list by concatenating a given list which range goes from 1 to n. For example, if the given list is [‘p’,’q’] and n=5, then the output should be [‘p1’,’q1’,’p2’,’q2’,’p3’,’q3’,’p4’,’q4’,’p5’,’q5’]</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">spam=[]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'enter a number'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">c=input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,int(c)+<span class="number">1</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">    a = <span class="string">'p'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">    b = <span class="string">'q'</span> + str(i)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    spam = spam + [a] + [b]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (spam)</span></pre></td></tr></table></figure>
 
-<p>Then, I realized that this program code has a practical use. If the an retailer needs n different commodities with corresponding price, the tags can be printed using this program code.</p>
-<p>Finally, I wrote a program code which can accept two input lists and returns a new list which contains only the unique elements from both sides.</p>
+<p><strong>Then, I realized that this program code has a practical use. If the an retailer needs n different commodities with corresponding price, the tags can be printed using this program code.</strong></p>
+<p>Finally, I wrote a program code which can accept two input lists and returns a new list which contains only the <strong>unique elements</strong> from both sides.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">5</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">b = [<span class="number">1</span>,<span class="number">6</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">9</span>,<span class="number">7</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">set (a+b)</span></pre></td></tr></table></figure>
 
-<p>The output is like [1,2,3,4,5,6,7,8,9]. This shows how powerful the method of function ‘set’ is ! It can find the unique elements in a list and rearrange them from the smallest to the biggest one.</p>
+<p>The output is like [1,2,3,4,5,6,7,8,9]. This shows how powerful the method of __function ‘set’ __is ! It can find the unique elements in a list and rearrange them from the smallest to the biggest one.</p>
 
       
     </div>
