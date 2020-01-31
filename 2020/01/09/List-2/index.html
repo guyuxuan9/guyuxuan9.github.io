@@ -88,7 +88,7 @@
 <meta property="og:description" content="Recently, I learnt some further knowledge about the list in python and do some more exercises. First of all, I wrote a code to help determine the price of the metro 1 tickets. If the customer enter th">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;09&#x2F;lWv1AK.jpg">
-<meta property="og:updated_time" content="2020-01-30T11:04:09.913Z">
+<meta property="og:updated_time" content="2020-01-30T11:11:23.007Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;09&#x2F;lWv1AK.jpg">
 
@@ -359,7 +359,7 @@
 
 <p>I think the main point here is to separate each element of DNA, and then make a judgement.</p>
 <p><img src="https://s2.ax1x.com/2020/01/09/lWv1AK.jpg" alt="lWv1AK.jpg"></p>
-<p>Finally, I wrote a code, using__ Monte Carlo method__ to find the shaded area D.  Monte Carlo method is basically to generate 1000 points randomly. The probability of the 1000 points landing on the shaded area is approximately the area of the shaded region, given that ‘l’ equals to 1 in the figure.</p>
+<p>Finally, I wrote a code, using__Monte Carlo method__ to find the shaded area D.  Monte Carlo method is basically to generate 1000 points randomly. The probability of the 1000 points landing on the shaded area is approximately the area of the shaded region, given that ‘l’ equals to 1 in the figure.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">x = np.random.rand(<span class="number">1000</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">y = np.random.rand(<span class="number">1000</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">m=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">n=<span class="number">1000</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">0</span>,len(x)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> y[i] &lt; x[i]**<span class="number">2</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">        m = m + <span class="number">1</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (m/n)</span></pre></td></tr></table></figure>
 
 <p>In the codes above, x and y are the coordinates generated randomly. The letter ‘m’ stands for the number of points landing on the shaded region, while the letter ‘n’ stands for the total number of points. This can be done due to the fact that the probability of points landing on region D equals the area of D divided by the area of the square, which is 1 in this case. Actually, the larger the sample size, the more accurate the results will be. Later on, I have known that the advantage of the  Monte Carlo method is that when the calculus doesn’t work, it still can be applied.</p>
@@ -482,7 +482,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -493,7 +493,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -504,7 +504,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
