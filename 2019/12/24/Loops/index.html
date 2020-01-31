@@ -89,7 +89,7 @@
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;30&#x2F;11F3uQ.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2019&#x2F;12&#x2F;24&#x2F;lP5QCq.md.png">
-<meta property="og:updated_time" content="2020-01-31T11:54:50.330Z">
+<meta property="og:updated_time" content="2020-01-31T12:07:51.559Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;30&#x2F;11F3uQ.png">
 
@@ -344,12 +344,13 @@
 
       
         <p>Last week, I have learned 2 different types of loops in Python, which are__ ‘for’ loop__ and <strong>‘while’ loop</strong>. I think the main difference between these 2 loops are that ‘for’ loops can deal with the situation where the number of loops is known, and ‘while’ loops are chosen if the number of loops is unknown.</p>
-<p>Later, I did some practise. </p>
-<h3 id="For-example-I-wrote-some-codes-to-display-the-pattern-like-this"><a href="#For-example-I-wrote-some-codes-to-display-the-pattern-like-this" class="headerlink" title="For example, I wrote some codes to display the pattern like this."></a>For example, I wrote some codes to display the pattern like this.</h3><p><img src="https://s2.ax1x.com/2020/01/30/11F3uQ.png" alt="11F3uQ.png"></p>
+<p>Later, I did some practise. For example, I wrote some codes to display the pattern like this.</p>
+<h2 id="Pattern"><a href="#Pattern" class="headerlink" title="Pattern"></a>Pattern</h2><p><img src="https://s2.ax1x.com/2020/01/30/11F3uQ.png" alt="11F3uQ.png"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">6</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (i,<span class="number">1</span>,i,i**<span class="number">2</span>,i**<span class="number">3</span>)</span></pre></td></tr></table></figure>
 
 <p>After writing these codes, I realized that if you want to <strong>print in a line, just use comma to separate different items, or add (end =’’)</strong> .</p>
-<h3 id="In-the-following-day-I-wrote-a-program-to-show-the-multiplication-table-like-this"><a href="#In-the-following-day-I-wrote-a-program-to-show-the-multiplication-table-like-this" class="headerlink" title="In the following day, I wrote a program to show the multiplication table like this."></a>In the following day, I wrote a program to show the multiplication table like this.<a href="https://imgchr.com/i/lP5QCq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/24/lP5QCq.md.png" alt="lP5QCq.md.png"></a></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">10</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range (<span class="number">1</span>,(i+<span class="number">1</span>)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (str(i) + <span class="string">'*'</span> + str(j) + <span class="string">'='</span>, i*j,end = <span class="string">' '</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">''</span>)</span></pre></td></tr></table></figure>
+<h2 id="Multiplication-Table"><a href="#Multiplication-Table" class="headerlink" title="Multiplication Table"></a>Multiplication Table</h2><p>In the following day, I wrote a program to show the multiplication table like this.<a href="https://imgchr.com/i/lP5QCq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/24/lP5QCq.md.png" alt="lP5QCq.md.png"></a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">10</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range (<span class="number">1</span>,(i+<span class="number">1</span>)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (str(i) + <span class="string">'*'</span> + str(j) + <span class="string">'='</span>, i*j,end = <span class="string">' '</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">''</span>)</span></pre></td></tr></table></figure>
 
 <p>This is an example of a nested loop. The inside part will be executed first, and then the outside part.  Adding (print(‘’)) in the last line is a very smart idea, because the end of each line will be occupied by a blank, so that the next figure begins in the next line.</p>
 
@@ -535,7 +536,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#For-example-I-wrote-some-codes-to-display-the-pattern-like-this"><span class="nav-number">1.</span> <span class="nav-text">For example, I wrote some codes to display the pattern like this.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#In-the-following-day-I-wrote-a-program-to-show-the-multiplication-table-like-this"><span class="nav-number">2.</span> <span class="nav-text">In the following day, I wrote a program to show the multiplication table like this.</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pattern"><span class="nav-number">1.</span> <span class="nav-text">Pattern</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multiplication-Table"><span class="nav-number">2.</span> <span class="nav-text">Multiplication Table</span></a></li></ol></div>
             
 
           </div>
