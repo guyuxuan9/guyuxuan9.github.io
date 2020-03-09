@@ -90,10 +90,11 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7i8O.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7mVI.md.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7lRS.md.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;10&#x2F;8CnWaF.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7rM4.md.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7Naq.md.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x74zD.png">
-<meta property="og:updated_time" content="2020-03-08T09:39:09.452Z">
+<meta property="og:updated_time" content="2020-03-09T16:17:05.465Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;03&#x2F;08&#x2F;3x7i8O.jpg">
 
@@ -376,8 +377,7 @@
 <p>After pre-processing the data, model is needed to be described and trained. Here, 3 layers are used. There are 2 inputs to the input layer, which are width and length respectively, and the output of which has 64 values. This is the input of the hidden layer, which gives 64 outputs to the output layer. Finally, the output layer gives 3 outputs (0,1,2), indicating 3 types of Iris flowers, and the values of which is called the confidence score. The higher the confidence score in one neuron, the higher the probability the type represented by the neuron will be. Furthermore, in the first two layers, the activation function ‘relu (rectified linear unit)’ is used, and in the output layer, the function ‘softmax’ is used. By the way, the Dense layers mean that every neurons are connected to each other. </p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">model = keras.Sequential([</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">    layers.Dense(units=<span class="number">64</span>, activation=<span class="string">'relu'</span>, input_shape=(<span class="number">2</span>,)),  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">    layers.Dense(units=<span class="number">64</span>, activation=<span class="string">'relu'</span>),</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">    layers.Dense(units=<span class="number">3</span>, activation=<span class="string">'softmax'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">])</span></pre></td></tr></table></figure>
 
-
-
+<p><img src="https://s2.ax1x.com/2020/03/10/8CnWaF.png" alt="8CnWaF.png"></p>
 <p>model.summary() can be used to see the structure of the model. As shown in the table, there are overall 4547 parameters needed to be trained. Additionally, the loss function used is ‘mse (mean square error)’ and the optimizer used is ‘sgd (stochastic gradient descent)’, after which the model is trained for 100 times . Note that ‘batch_size=4’ means that 4 sets of data are trained together and ‘verbose=1’ , which is a default, means that the progress bar is printed. If verbose=0, the progress bar will not be printed. </p>
 <p><a href="https://imgchr.com/i/3x7rM4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/03/08/3x7rM4.md.png" alt="3x7rM4.md.png"></a></p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">model.fit(train_x, train_y_onehot, batch_size=<span class="number">4</span>, epochs=<span class="number">100</span>, verbose=<span class="number">1</span>)</span></pre></td></tr></table></figure>
@@ -439,6 +439,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/09/CNN-Classification/" rel="prev" title="CNN & Classification">
+                CNN & Classification <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -515,7 +519,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
