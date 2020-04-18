@@ -63,6 +63,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Read-Write-documents" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/18/Read-Write-documents/" class="article-date">
+  <time datetime="2020-02-18T12:49:55.000Z" itemprop="datePublished">2020-02-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/18/Read-Write-documents/">Read &amp; Write documents</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Recently, I have learnt how to read and write documents in Python using absolute path (绝对路径) and relative path (相对路径). </p>
+<h2 id="Create-IELTS-vocabulary-test"><a href="#Create-IELTS-vocabulary-test" class="headerlink" title="Create IELTS vocabulary test"></a>Create IELTS vocabulary test</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">file = open(<span class="string">'C:\\Users\\admin\\Chapter8\\IELTS.txt'</span>,<span class="string">'r'</span>,encoding=<span class="string">'UTF-8'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">content = file.read().split()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment">#print(content)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">chinese = []</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">word = []</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">test=&#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(content)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> (i+<span class="number">1</span>) % <span class="number">2</span> == <span class="number">0</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">        chinese = chinese + [content[i]]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> (i+<span class="number">1</span>) % <span class="number">2</span> != <span class="number">0</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">        word = word + [content[i]]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(word)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">    test[word[i]] = chinese[i]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">file.close()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># create 3 tests</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> quizNum <span class="keyword">in</span> range(<span class="number">3</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">    quiz = open(<span class="string">'QA\\IELTSquiz%s.txt'</span> % (quizNum + <span class="number">1</span>),<span class="string">'w'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">    answer = open(<span class="string">'QA\\IELTSquiz_answeer%s.txt'</span> % (quizNum + <span class="number">1</span>),<span class="string">'w'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Header</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    quiz.write(<span class="string">'Name:\n\nDate:\n\nPeriod:\n\n'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    quiz.write((<span class="string">' '</span>*<span class="number">20</span>)+<span class="string">'IELTS Quiz(Form %s)'</span> % (quizNum + <span class="number">1</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">    quiz.write(<span class="string">'\n\n'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># random order</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    English = list(test.keys())</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">    random.shuffle(English)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># option</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">for</span> questionNum <span class="keyword">in</span> range(len(English)):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">        correctAnswer = test[English[questionNum]]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">        wrongAnswer = list(test.values())                                         </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">del</span> wrongAnswer[wrongAnswer.index(correctAnswer)]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line">        wrongAnswer = random.sample(wrongAnswer,<span class="number">3</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line">        answerOption = wrongAnswer + [correctAnswer]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line">        random.shuffle(answerOption)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">36</span></pre></td><td class="code"><pre><span class="line">        <span class="comment">#print(answerOption)</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">37</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># question</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">38</span></pre></td><td class="code"><pre><span class="line">        quiz.write(<span class="string">'%s. What does %s mean?\n'</span> % (questionNum + <span class="number">1</span>, English[questionNum]))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">39</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>):</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">40</span></pre></td><td class="code"><pre><span class="line">            quiz.write(<span class="string">'%s. %s\n'</span> % (<span class="string">'ABCD'</span>[i],answerOption[i]))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">41</span></pre></td><td class="code"><pre><span class="line">        quiz.write(<span class="string">'\n'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">42</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># answer</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">43</span></pre></td><td class="code"><pre><span class="line">        answer.write(<span class="string">'%s. %s\n'</span> % (questionNum + <span class="number">1</span>, <span class="string">'ABCD'</span>[answerOption.index(correctAnswer)]))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">44</span></pre></td><td class="code"><pre><span class="line">    quiz.close()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">45</span></pre></td><td class="code"><pre><span class="line">    answer.close()</span></pre></td></tr></table></figure>
+
+<p>Given that I have got an IELTS vocabulary sources, I can randomly create several numbers of tests and corresponding answers with the same contents but different order of the question, so that the cheating can be avoided. The vocabulary source is shown below.</p>
+<p><img src="https://s2.ax1x.com/2020/02/18/3Ap3ef.png" alt="3Ap3ef.png"></p>
+<p><img src="https://s2.ax1x.com/2020/02/18/3ApVoD.png" alt="3ApVoD.png"></p>
+<p>I open the file in the C drive and read the contents. Note that the ‘encoding = ‘UTF-8’’ is used because there are some Chinese in the documents. Otherwise, the Chinese cannot be recognised. The created documents are shown below.</p>
+<p><img src="https://s2.ax1x.com/2020/02/18/3AS7zn.png" alt="3AS7zn.png"></p>
+<p>Then, the ‘split()’ method is used to separate the English word and its Chinese meaning, which is followed by putting all the English into a list called ‘word’ and all the Chinese into a list called ‘chinese’. Here, I used a seemingly ‘stupid’ way to achieve this. As the list ‘content’ is like one Chinese, one word, I separate them according to their index (the word has odd one, and the Chinese has the even one), and after which I put the English word and corresponding Chinese into a dictionary, so that the Chinese meaning can be found more easily, which is not restricted by the index of the elements unlike the list. This is what line 1-17 did.</p>
+<p>Then, I created 3 tests in the folder called ‘QA’ in the current working directory (当前工作目录) in the ‘write’ form. In the ‘Header’ part, the title of the tests are created, including name, date and the unique test number. Note that the ‘\n’ is used to achieve newline. Then, a list called ‘English’ is produced, with the same contents as the list ‘word’ but different corresponding index of the word, and this is done by the ‘random.shuffle()’</p>
+<p>The next step is to create questions. By choosing an English word (keys) at a time and finding its corresponding Chinese meaning (values) in the dictionary, the word wanted to be test can be decided. Also, another 3 wrong options needs to be found, given that the multiple choice has 4 options. This can be done by deleting the correct answer in all the answers, and then randomly choose 3 of the new list. Finally, combine the correct answer with 3 incorrect ones, the options are finished.</p>
+<p>The final step is to write the question and answers. The quiz form 1 is shown below.</p>
+<p><a href="https://imgchr.com/i/3ApMQI" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/02/18/3ApMQI.png" alt="3ApMQI.png"></a></p>
+<p>In summary, 3 steps are required to deal with a document:</p>
+<ol>
+<li>Open the file using ‘open()’ method or create a file using ‘os.makedirs()’</li>
+<li>Use the ‘read()’ or ‘write()’ or ‘add()’ method to read or write or add something. Note that the ‘write()’ method will delete all the previous contents and write.</li>
+<li>Close the file using ‘close()’ method.</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/18/Read-Write-documents/" data-id="ck95qlynn001g0gvadzvn8al0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Strings" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/11/Strings/" class="article-date">
@@ -122,7 +183,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/11/Strings/" data-id="ck95nkz8u001h8wvaaxq298t2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/11/Strings/" data-id="ck95qlynt001o0gvacikbguy4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -176,7 +237,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/06/Dictionary-2/" data-id="ck95nkz8000068wvadrr141zl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/06/Dictionary-2/" data-id="ck95qlymn00020gvag6og67dx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -222,7 +283,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/" data-id="ck95nkz8i000y8wva1gdteg52" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/" data-id="ck95qlyna000u0gva5k507osq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/2019-nCoV/" rel="tag">2019-nCoV</a></li></ul>
@@ -273,7 +334,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/27/Dictionary/" data-id="ck95nkz7u00028wva7fnoho6r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/27/Dictionary/" data-id="ck95qlymx00080gva5au59mrd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -321,7 +382,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/09/Feelings-after-getting-the-award/" data-id="ck95nkz8200078wva3qdffhaz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/09/Feelings-after-getting-the-award/" data-id="ck95qlymu00060gva6xdq1jph" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BPho/" rel="tag">BPho</a></li></ul>
@@ -384,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/09/List-2/" data-id="ck95nkz8g000u8wva74nr5t5u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/09/List-2/" data-id="ck95qlyn0000e0gvagshwebr2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -445,7 +506,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/26/List/" data-id="ck95nkz87000e8wvacr531fva" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/26/List/" data-id="ck95qlyn4000m0gvahs7k6vb3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -497,7 +558,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck95nkz8a000j8wvabfvbgchk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck95qlyn9000r0gvaahdj6m4l" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -552,68 +613,9 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/12/hello-world/" data-id="ck95nkz94001v8wvaew6bf4mc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/12/hello-world/" data-id="ck95qlynw001v0gva9zwgdikq" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-The-feelings-after-attending-the-BPho" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/10/The-feelings-after-attending-the-BPho/" class="article-date">
-  <time datetime="2019-12-10T12:48:28.000Z" itemprop="datePublished">2019-12-10</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/BPho/">BPho</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/10/The-feelings-after-attending-the-BPho/">The feelings after attending the BPho</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>On November 15th, I attended the BPho Physics competition. Although the content of the test was a little bit hard, I learned so much from the exam itself and the process of preparing for it. </p>
-<p>At the beginning, facing so many difficult questions, I didn’t know what to do. As I was an AS level student, some of the questions are the ones that I hadn’t met before. As a result, after solving some questions, I decided to separate all the questions from 2008 to 2018 into 5 categories in Section 1 and 8 categories in Section 2.</p>
-<p><a href="https://imgse.com/i/QDLzM8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLzM8.png" alt="QDLzM8.png"></a><br><a href="https://imgse.com/i/QDLjRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLjRP.png" alt="QDLjRP.png"></a></p>
-<p>Also, I made some comments, which is about some of my thinking process, on the side of the question.<img src="https://s2.ax1x.com/2019/12/10/QDOwod.png" alt="QDOwod.png"></p>
-<p>After taking part in this exam, I have learned 3 good habits: </p>
-<ul>
-<li><p><strong>Being persistent</strong>.  During the learning, not everything can be achieved without any obstacles. Although, once I wanted to give up, I kept telling myself ‘try again, try again’. Luckily, I did it, and regardless of the outcome, this spirit inspired me a lot.</p>
-</li>
-<li><p><strong>Being confident</strong>. At the beginning, I was not confident at all, because I can solve few problems. As time went by, I began to make some progress, so I became more confident. Latter,  I found that the more confident you are, the better the outcome will be, vice versa.</p>
-</li>
-<li><p><strong>Being ambitious</strong>. Before doing a task, a target should be built up, which guided me when I was hesitated. Setting up a higher goal gives me many incentives to learn.</p>
-<p>What is more, after doing a lot of questions, I found that Physics was quite interesting. Many things in our daily lives can be explained by Physics. For example, one day, on my way to school, a car passed by with its trumpet on. The pitch of which changed as the car moving. A week later, I knew this is called the Doppler Effect.</p>
-</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvSsK.png" alt="QDvSsK.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvwo4.png" alt="QDvwo4.png"></p>
-<p>Physics is very interesting!</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/10/The-feelings-after-attending-the-BPho/" data-id="ck95nkz92001s8wvabxjf5b42" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BPho/" rel="tag">BPho</a></li></ul>
-
     </footer>
   </div>
   
@@ -678,6 +680,10 @@
       <ul>
         
           <li>
+            <a href="/2020/04/18/Pandas-2/">Pandas 2</a>
+          </li>
+        
+          <li>
             <a href="/2020/04/11/Feelings-and-Reflections-on-the-Garbage-Classification-Programme/">Feelings and Reflections on the Garbage Classification Programme</a>
           </li>
         
@@ -691,10 +697,6 @@
         
           <li>
             <a href="/2020/03/17/Numpy-2/">Numpy 2</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/13/Numpy/">Numpy</a>
           </li>
         
       </ul>
