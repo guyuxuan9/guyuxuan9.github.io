@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Matplotlib | Gu Yuxuan&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Today, I have learnt some useful methods about the matplotlib. Area and population in California City &amp;lt;Image from https:&#x2F;&#x2F;ontheworldmap.com&#x2F;usa&#x2F;state&#x2F;california&#x2F;map-of-california-max.jpg&amp;gt; First">
+<meta name="keywords" content="Data analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Matplotlib">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Matplotlib&#x2F;index.html">
+<meta property="og:site_name" content="Gu Yuxuan&#39;s blog">
+<meta property="og:description" content="Today, I have learnt some useful methods about the matplotlib. Area and population in California City &amp;lt;Image from https:&#x2F;&#x2F;ontheworldmap.com&#x2F;usa&#x2F;state&#x2F;california&#x2F;map-of-california-max.jpg&amp;gt; First">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Jy8oKs.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;JyQcfH.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Jy1wdK.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Jy3eYD.md.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Jy89N8.png">
+<meta property="og:updated_time" content="2020-04-25T10:22:13.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;25&#x2F;Jy8oKs.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Gu Yuxuan&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Gu Yuxuan&#39;s blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Matplotlib" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/25/Matplotlib/" class="article-date">
+  <time datetime="2020-04-25T09:44:22.000Z" itemprop="datePublished">2020-04-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Data-analysis/">Data analysis</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Matplotlib
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Today, I have learnt some useful methods about the matplotlib.</p>
+<h2 id="Area-and-population-in-California-City"><a href="#Area-and-population-in-California-City" class="headerlink" title="Area and population in California City"></a>Area and population in California City</h2><p><img src="https://s1.ax1x.com/2020/04/25/Jy8oKs.png" alt="Jy8oKs.png"></p>
+<p>&lt;Image from <a href="https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;" target="_blank" rel="noopener">https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;</a></p>
+<p>First of all, the <code>csv</code> file is loaded by <code>pd.read_csv()</code>.</p>
+<p><img src="https://s1.ax1x.com/2020/04/25/JyQcfH.png" alt="JyQcfH.png"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">lat,lon = cities[<span class="string">'latd'</span>],cities[<span class="string">'longd'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">population,area = cities[<span class="string">'population_total'</span>],cities[<span class="string">'area_total_km2'</span>]</span></pre></td></tr></table></figure>
+
+<p>The lattitude and longitude of the city and its corresponding area and population is the interested data, so they are selected from the file.</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">plt.scatter(lon,lat,label=<span class="literal">None</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">            c=np.log10(population),cmap=<span class="string">'viridis'</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">            s=area,linewidth=<span class="number">0</span>,alpha=<span class="number">0.5</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">plt.axis(aspect=<span class="string">'equal'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'longitude'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'latitude'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">plt.colorbar(label=<span class="string">'log$_&#123;10&#125;$(population)'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">plt.clim(<span class="number">3</span>,<span class="number">7</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> area <span class="keyword">in</span> [<span class="number">100</span>,<span class="number">300</span>,<span class="number">500</span>]:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">    plt.scatter([],[],c=<span class="string">'k'</span>,alpha=<span class="number">0.3</span>,s=area,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">                label=str(area) + <span class="string">'km$^2$'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">plt.legend(scatterpoints=<span class="number">1</span>,frameon=<span class="literal">True</span>,</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line">           labelspacing=<span class="number">1</span>,title=<span class="string">'City Area'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line">plt.title(<span class="string">'California Cities: Area and Population'</span>)</span></pre></td></tr></table></figure>
+
+<p>Scattered graph is used here. The x-axis stands for the longitude of the city and the y-axis stands for the lattitude of the city. Different colors are used to represent different number (density) of population. As the population is too large, the log scale is used to represent the large number. <code>s</code> is the size of the point on the scattered diagrame which represents the area of the city. <code>cmap</code> is the parameter used to set the type of colormap, such as ‘binary’ and ‘viridis’.</p>
+<p>Here, the scale used in the x-axis and y-axis is the same. What is more, areas of 100, 300, 500 are used to give an approximation of the relation between the size of the circle and the area. Note that in line 11, x value and y value are none, so the legend is set using labels instead of x,y values, so <code>plt.legend()</code> must be used to show the legend. Otherwize, the legend will not be shown. </p>
+<p><a href="https://imgchr.com/i/Jy1wdK" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy1wdK.png" alt="Jy1wdK.png"></a></p>
+<p>The graph shows the distribution of area and population from North-west to South-east in California.</p>
+<h2 id="2D-Histogram"><a href="#2D-Histogram" class="headerlink" title="2D Histogram"></a>2D Histogram</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">cov = [[<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">x,y = np.random.multivariate_normal(mean,cov,<span class="number">10000</span>).T</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">plt.hist2d(x,y,bins=<span class="number">30</span>,cmap=<span class="string">'Blues'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">cb = plt.colorbar()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">cb.set_label(<span class="string">'counts in bin'</span>)</span></pre></td></tr></table></figure>
+
+<p>The Mulrivariate Gaussian Distribution is used to generate the x-axis and y-axis of the graph. <code>bins</code> parameter is used to define the number of equal-width bins in the range. </p>
+<p><a href="https://imgchr.com/i/Jy3eYD" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy3eYD.md.png" alt="Jy3eYD.md.png"></a></p>
+<p>This diagrame has very important applications in my opinion. For example, in a shop, the enterprise can have an idea of the popularity of different goods by looking at the density of people in that area. This can be achieved by using an infrared detector which detects the heat emitted from human beings. The darker the color, the more people there are in that area. In doing so, the enterprise can adjust the supply of different products according to different demand to maximise their profit.</p>
+<p><a href="https://imgchr.com/i/Jy89N8" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy89N8.png" alt="Jy89N8.png"></a></p>
+<p>&lt;Image from <a href="https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;" target="_blank" rel="noopener">https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/25/Matplotlib/" data-id="ck9fh6eqa000v38vaafkh4u3h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Data-analysis/" rel="tag">Data analysis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/04/18/Pandas-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Pandas 2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/BPho/">BPho</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Data-analysis/">Data analysis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Extra-curricular-activities/">Extra-curricular activities</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Machine-Learning/">Machine Learning</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Testing/">Testing</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/2019-nCoV/" rel="tag">2019-nCoV</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BPho/" rel="tag">BPho</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Data-analysis/" rel="tag">Data analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/2019-nCoV/" style="font-size: 10px;">2019-nCoV</a> <a href="/tags/BPho/" style="font-size: 12.5px;">BPho</a> <a href="/tags/Data-analysis/" style="font-size: 15px;">Data analysis</a> <a href="/tags/Machine-Learning/" style="font-size: 17.5px;">Machine Learning</a> <a href="/tags/Python/" style="font-size: 20px;">Python</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/25/Matplotlib/">Matplotlib</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/18/Pandas-2/">Pandas 2</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/11/Feelings-and-Reflections-on-the-Garbage-Classification-Programme/">Feelings and Reflections on the Garbage Classification Programme</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/09/Pandas/">Pandas</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/23/Garbage-Classification/">Garbage Classification</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Gu Yuxuan (Jesse Gu)<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

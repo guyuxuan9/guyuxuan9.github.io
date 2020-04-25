@@ -63,6 +63,81 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Image-Processing" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/26/Image-Processing/" class="article-date">
+  <time datetime="2020-02-26T03:40:06.000Z" itemprop="datePublished">2020-02-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/26/Image-Processing/">Image Processing</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Recently, I have read some open-source codes about the Image Processing. The main modules used are ‘opencv’, ‘numpy’,’matplotlib’. </p>
+<figure class="highlight python"><figcaption><span># import packages</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">%matplotlib inline     <span class="comment"># show the image</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span></pre></td></tr></table></figure>
+
+<p>Then, the image is read into the file, and the type of which is np.ndarray. By the way, I have learnt that the image is stored in the computer in the form of  matrix, where each pixel is consist of RGB 3 channels, and the value of each channel is between 0-255 as there are 8 bits in each channel. Therefore, through different combination of colours, we can see the colourful images. In addition, the shape of the image read is 506 * 675 * 3, meaning that the image is 506px in height, 675px in width and has 3 colour channels.</p>
+<p><img src="https://s2.ax1x.com/2020/02/27/3ddtVf.png" alt="3ddtVf.png"></p>
+<p>After this, if we want to see the image in the notebook, we can use plt.imshow() to show the image, and convert it from BGR to RGB colours. Also, we can show the grayscale image by converting BGR to GRAY. </p>
+<p><strong>BGR</strong>:</p>
+<img src="https://s2.ax1x.com/2020/02/27/3ddIMR.png" alt="3ddIMR.png" style="zoom:80%;" />
+
+<p><strong>Grayscale</strong>:</p>
+<p><img src="https://s2.ax1x.com/2020/02/27/3dwpLt.png" alt="3dwpLt.png"></p>
+<p>After the pre-processing, the slicing can be used to choose the part you want. </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">fig1 = bridgeRaw <span class="comment"># This line is a WRONG operation. </span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># If you directly assign an image to a new variable like above, you will unable to modify them seperately.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># You should create a copy and assign it to fig1 variable, like the following line.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">fig1 = bridgeRaw.copy() </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Slicing fig1 and assign the sliced part to fig2.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">fig2 = fig1[<span class="number">100</span>:<span class="number">250</span>, <span class="number">200</span>:<span class="number">400</span>, :]  </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Slicing fig2 and assign the sliced part to fig3.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">fig3 = fig2[<span class="number">50</span>:<span class="number">60</span>, <span class="number">147</span>:<span class="number">157</span>, :] </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Draw yellow rectangles in copies of fig1 and fig2 to show the part you sliced.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">fig1 = cv2.rectangle(fig1.copy(),(<span class="number">200</span>,<span class="number">100</span>),(<span class="number">400</span>,<span class="number">250</span>), color=(<span class="number">0</span>,<span class="number">255</span>,<span class="number">255</span>),thickness = <span class="number">2</span>)     <span class="comment">#通过对角线点坐标画矩形</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">fig2 = cv2.rectangle(fig2.copy(),(<span class="number">147</span>,<span class="number">50</span>),(<span class="number">157</span>,<span class="number">60</span>), color=(<span class="number">0</span>,<span class="number">255</span>,<span class="number">255</span>),thickness = <span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="comment"># Show the images.</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">15</span>, <span class="number">10</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">1</span>,<span class="number">3</span>,<span class="number">1</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(fig1, cv2.COLOR_BGR2RGB))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">1</span>,<span class="number">3</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(fig2, cv2.COLOR_BGR2RGB))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">1</span>,<span class="number">3</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(fig3, cv2.COLOR_BGR2RGB))</span></pre></td></tr></table></figure>
+
+<p>Just like the slicing of list or string in Python, [start:stop] can be used to slice. Hence, the height and width can be chosen. Furthermore, yellow rectangles can be drawn to locate the chosen area. Note that the rectangle is drawn, and the parameter is the coordinate of the diagonal. </p>
+<p><img src="https://s2.ax1x.com/2020/02/27/3dw3YF.png" alt="3dw3YF.png"></p>
+<p>Additionally, binary image can also be shown, meaning that value greater than the threshold will be changed to 255, and that smaller than the threshold will be changed to 0, so that there are only two colours in the matrix, black and white, and 0 stands for black, 255 stands for white. The higher the threshold. the simpler the processed image, but there may be some loss in comparison with the original one. If the threshold is low, the processed image may be closer to the raw image, but there may be some noise in it.</p>
+<p><img src="https://s2.ax1x.com/2020/02/27/3dwc6A.png" alt="3dwc6A.png"></p>
+<p><img src="https://s2.ax1x.com/2020/02/27/3dwySH.png" alt="3dwySH.png"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">garGray2 = cv2.cvtColor(garbageRaw.copy(), cv2.COLOR_BGR2GRAY)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">garGray2[garGray2&gt;threshold] = <span class="number">255</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">garGray2[garGray2&lt;=threshold] = <span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">plt.figure(figsize=(<span class="number">10</span>, <span class="number">6</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">2</span>,<span class="number">1</span>)                                             </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(garbageRaw, cv2.COLOR_BGR2RGB))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(garGray0, cv2.COLOR_GRAY2RGB))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">2</span>,<span class="number">3</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(garGray1, cv2.COLOR_GRAY2RGB))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">plt.subplot(<span class="number">2</span>,<span class="number">2</span>,<span class="number">4</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">plt.imshow(cv2.cvtColor(garGray2, cv2.COLOR_GRAY2RGB))</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/3dwtyR" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/02/27/3dwtyR.png" alt="3dwtyR.png"></a></p>
+<p>What is more, the edge detection can be achieved using Laplace operator. By the way, I have learnt the simplest meaning of convolution. Just put matrix B on the matrix A, and multiply with the corresponding element. For example, if B is on the left upper corner of A, than the calculation should be 3 * 0 + 3 * 1 + 2 * 2 + 2 * 0 + 2 * 0 + 0 * 1 + 3 * 0 + 1 * 1 + 2 * 2 = 3 + 4 +1 +4 = 12, which is written in the left upper corner of matrix A * B.</p>
+<p><a href="https://imgchr.com/i/3dw8W4" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/02/27/3dw8W4.png" alt="3dw8W4.png"></a></p>
+<p>In conclusion, I have learnt the following briefly:</p>
+<ol>
+<li>Images are stored as matrix. </li>
+<li>Different values in the matrix (0-255) represents the colour of R/G/B</li>
+<li>To process the image is actually to change the pixel represented by the matrix. It is an algebraic calculation</li>
+<li>2D Convolution is calculated by multiplying corresponding elements</li>
+<li>Binary value can show the edge of an object</li>
+<li>Images have many types, such as RGB and Grayscale. Grayscale image is often used to process, and then convert it into the RGB or BGR form.</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/02/26/Image-Processing/" data-id="ck9fh6eq0000i38va3wcygp0w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Read-Write-documents" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/18/Read-Write-documents/" class="article-date">
@@ -112,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/18/Read-Write-documents/" data-id="ck95qpc8f001uesva0adh8a6e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/18/Read-Write-documents/" data-id="ck9fh6eqy001q38va5lc255p4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -183,7 +258,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/11/Strings/" data-id="ck95qpc8g001wesvagu1r9lnv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/11/Strings/" data-id="ck9fh6er5002138vabnzjcydf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -237,7 +312,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/02/06/Dictionary-2/" data-id="ck95qpc730001esvadbgd8bd1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/02/06/Dictionary-2/" data-id="ck9fh6epm000638va614afk9l" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -283,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/" data-id="ck95qpc7p000wesva0vmgcnf3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/" data-id="ck9fh6eqg001638vafhro8c5y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/2019-nCoV/" rel="tag">2019-nCoV</a></li></ul>
@@ -334,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/27/Dictionary/" data-id="ck95qpc790005esva1ubz6ql1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/27/Dictionary/" data-id="ck9fh6epo000738vaegxc6nfx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -382,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/09/Feelings-after-getting-the-award/" data-id="ck95qpc770004esvaccuqgsak" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/09/Feelings-after-getting-the-award/" data-id="ck9fh6epr000838va9ad8e838" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BPho/" rel="tag">BPho</a></li></ul>
@@ -445,7 +520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2020/01/09/List-2/" data-id="ck95qpc7e000cesvaexcua46c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2020/01/09/List-2/" data-id="ck9fh6eq6000o38vahu746g2l" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -506,7 +581,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/26/List/" data-id="ck95qpc7h000kesvae2lldi1z" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/26/List/" data-id="ck9fh6epv000c38va1syiblov" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
@@ -558,64 +633,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck95qpc7m000sesvaa8eh1qtf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/12/24/Loops/" data-id="ck9fh6eq8000q38va8lxi1ij9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li></ul>
 
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/12/12/hello-world/" class="article-date">
-  <time datetime="2019-12-12T10:12:27.892Z" itemprop="datePublished">2019-12-12</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Testing/">Testing</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/12/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Hello, everyone! This is my first blog. </p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/12/12/hello-world/" data-id="ck95qpc8h001zesva4l8s9dt4" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -680,6 +702,10 @@
       <ul>
         
           <li>
+            <a href="/2020/04/25/Matplotlib/">Matplotlib</a>
+          </li>
+        
+          <li>
             <a href="/2020/04/18/Pandas-2/">Pandas 2</a>
           </li>
         
@@ -693,10 +719,6 @@
         
           <li>
             <a href="/2020/03/23/Garbage-Classification/">Garbage Classification</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/17/Numpy-2/">Numpy 2</a>
           </li>
         
       </ul>
