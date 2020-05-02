@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="Today, I have looked at some methods of matplotlib.  .pairplot()is used to &amp;apos;Plot pairwise relationships in a dataset&amp;apos;. 12&amp;#96;&amp;#96;&amp;#96;python3iris &amp;#x3D; sns.load_dataset(&amp;#39;iris&amp;#39;)4iris.head()">
+<meta name="description" content="Today, I have looked at some methods of matplotlib.  .pairplot()is used to Plot pairwise relationships in a dataset. 12&amp;#96;&amp;#96;&amp;#96;python3iris &amp;#x3D; sns.load_dataset(&amp;#39;iris&amp;#39;)4iris.head()">
 <meta name="keywords" content="Data analysis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Matplotlib 2">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;Matplotlib-2&#x2F;index.html">
 <meta property="og:site_name" content="Gu Yuxuan&#39;s blog">
-<meta property="og:description" content="Today, I have looked at some methods of matplotlib.  .pairplot()is used to &amp;apos;Plot pairwise relationships in a dataset&amp;apos;. 12&amp;#96;&amp;#96;&amp;#96;python3iris &amp;#x3D; sns.load_dataset(&amp;#39;iris&amp;#39;)4iris.head()">
+<meta property="og:description" content="Today, I have looked at some methods of matplotlib.  .pairplot()is used to Plot pairwise relationships in a dataset. 12&amp;#96;&amp;#96;&amp;#96;python3iris &amp;#x3D; sns.load_dataset(&amp;#39;iris&amp;#39;)4iris.head()">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JItgRe.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JIN2kV.png">
@@ -93,7 +93,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JIdCJf.md.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JIwTgO.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JI0YPx.png">
-<meta property="og:updated_time" content="2020-04-28T14:37:52.539Z">
+<meta property="og:updated_time" content="2020-05-02T14:25:19.498Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;04&#x2F;28&#x2F;JItgRe.png">
 
@@ -348,18 +348,18 @@
 
       
         <p>Today, I have looked at some methods of <code>matplotlib</code>. </p>
-<h2 id="pairplot"><a href="#pairplot" class="headerlink" title=".pairplot()"></a>.pairplot()</h2><figure class="highlight plain"><figcaption><span>is used to 'Plot pairwise relationships in a dataset'. </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;python</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">iris &#x3D; sns.load_dataset(&#39;iris&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">iris.head()</span></pre></td></tr></table></figure>
+<h2 id="pairplot"><a href="#pairplot" class="headerlink" title=".pairplot()"></a>.pairplot()</h2><figure class="highlight plain"><figcaption><span>is used to Plot pairwise relationships in a dataset. </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;python</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">iris &#x3D; sns.load_dataset(&#39;iris&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">iris.head()</span></pre></td></tr></table></figure>
 
 <p><a href="https://imgchr.com/i/JItgRe" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/28/JItgRe.png" alt="JItgRe.png"></a></p>
 <p>First of all, the data is loaded. This data is about the sepal widths, sepal length, petal width and petal length of 3 different kinds of Iris Flower.</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">sns.pairplot(iris,hue=<span class="string">'species'</span>,size=<span class="number">2.5</span>)</span></pre></td></tr></table></figure>
 
 <p><img src="https://s1.ax1x.com/2020/04/28/JIN2kV.png" alt="JIN2kV.png"></p>
-<figure class="highlight plain"><figcaption><span>is a ```dataFrame```. ```hue</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">## .FaceGrid()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">This class maps a dataset onto multiple axes arrayed in a grid of rows and columns that correspond to *levels* of variables in the dataset. The plots it produces are often called “lattice”, “trellis”, or “small-multiple” graphics.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;python</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">tips &#x3D; sns.load_dataset(&#39;tips&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">tips.head()</span></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>is a ```dataFrame```. ```hue</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">## .FaceGrid()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">This class maps a dataset onto multiple axes arrayed in a grid of rows and columns that correspond to levels of variables in the dataset. The plots it produces are often called “lattice”, “trellis”, or “small-multiple” graphics.</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">&#96;&#96;&#96;python</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">tips &#x3D; sns.load_dataset(&#39;tips&#39;)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line">tips.head()</span></pre></td></tr></table></figure>
 
 <p><img src="https://s1.ax1x.com/2020/04/28/JIUr9O.png" alt="JIUr9O.png"></p>
 <p>The data of tips picked is loaded.</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">tips[<span class="string">'tip_pct'</span>] = <span class="number">100</span>*tips[<span class="string">'tip'</span>]/tips[<span class="string">'total_bill'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">grid = sns.FacetGrid(tips,row=<span class="string">'sex'</span>,col=<span class="string">'time'</span>,margin_titles=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">grid.map(plt.hist,<span class="string">'tip_pct'</span>,bins=np.linspace(<span class="number">0</span>,<span class="number">40</span>,<span class="number">15</span>))</span></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">tips[<span class="string">'tip_pct'</span>] = <span class="number">100</span>*tips[<span class="string">'tip'</span>]/tips[<span class="string">'total_bill'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">grid = sns.FacetGrid(tips,row=<span class="string">'sex'</span>,col=<span class="string">'time'</span>,margin_titles=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">grid.map(plt.hist,<span class="string">'tip_pct'</span>,bins=np.linspace(<span class="number">0</span>,<span class="number">40</span>,<span class="number">15</span>))</span></pre></td></tr></table></figure>
 
 <p><a href="https://imgchr.com/i/JIdCJf" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/28/JIdCJf.md.png" alt="JIdCJf.md.png"></a></p>
 <p>First of all, a new column in the <code>tips</code> <code>dataFrame</code> is added, called <code>tip_pct</code> which is calculated to represent the proportion of tips of the total bill paid. Then, <code>&#39;sex&#39;</code> and <code>&#39;time&#39;</code> columns are picked to represent the x axis and y axis respectively. <code>bins=np.linspace(0,40,15)</code> means the x axis starts from 0 and ends at 40, with 15 equal intervals. As shown in the graph, Male pays more bill at dinner. Maybe it is due to the fact that males like to treat others or invite others and have a party at dinner. </p>
@@ -410,6 +410,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/02/Matplotlib-3/" rel="prev" title="Matplotlib 3">
+                Matplotlib 3 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -496,7 +500,7 @@
                 <!-- <a href="/archives/%7C%7C%20archive"> -->
                 <a href="https://guyuxuan9.github.io//archives/" target="_Self">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
