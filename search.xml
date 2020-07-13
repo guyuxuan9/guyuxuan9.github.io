@@ -1,6 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Adjustment in equipment and codes</title>
+    <url>/2020/07/13/Adjustment-in-equipment-and-codes/</url>
+    <content><![CDATA[<p>Last few days, I found that the GUI will exit automatically after 1-2 hours, and the humidity data fluctuates too much, which leads to too many uncertainties. Therefore, I decided to fix these two bugs.</p>
+<h2 id="Capacitive-Humidity-Sensor"><a href="#Capacitive-Humidity-Sensor" class="headerlink" title="Capacitive Humidity Sensor"></a>Capacitive Humidity Sensor</h2><p><img src="https://s1.ax1x.com/2020/07/13/UYGpdO.jpg" alt="UYGpdO.jpg"></p>
+<p>I bought a new humidity sensor that determines the humidity by measuring the capacitance of the material. The previous humidity sensor determines the humidity by measuring the resistance of the material. These two types of sensors have some differences in how do they work.</p>
+<p><strong>Capacitive</strong> :</p>
+<ul>
+<li>$$C=\dfrac {\varepsilon A}{4\pi kd}$$ , where $\varepsilon$ is the permittivity.</li>
+<li>When the humidity of the environment changes, the permittivity $\varepsilon$ will change, so the capacitance of the material will change. We can detect this change using the electric circuits embedded inside the board.</li>
+<li>The permittivity varies almost linearly with the humidity change, so the capacitance varies almost linearly with the humidity change.</li>
+</ul>
+<p><strong>Resistive</strong>:</p>
+<ul>
+<li><p>From the A level Physics coursebook, I also know that:</p>
+<p>$$R=\rho \dfrac {L}{A}$$ , where $\rho$ is the resistivity of the resistor, L is the length of the resistor, and A is the cross-sectional area of the resistor.</p>
+</li>
+<li><p>When humidity of the environment changes, the resistivity $$\rho$$ will change, so the resistance of the material will change, so as the voltage across the material. We can convert the analogue voltage signal to digital signal using ADC.</p>
+</li>
+<li><p>However, the resistive sensor lacks of linearity.</p>
+</li>
+</ul>
+<p><img src="https://s1.ax1x.com/2020/07/13/UYaQYT.png" alt="UYaQYT.png"></p>
+<p>This is the humidity data read from the new capacitive humidity sensor. As shown in the graph above, the fluctuation is very small, so the precision increases.</p>
+<p>In this capacitive humidity sensor, the capacitance is converted into voltage signal by electric circuits sealed in the module, so currently, I do not know clearly how does the module achieve this. The analogue voltage signal is read from the capacitive humidity sensor, and then the signal is transmitted to Arduino. The chips in Arduino will convert this analogue signal to digital signal by ADC which is 10 bits, so the value shown on the screen is the digital signal varied from 0-1023. In addition, Arduino will transmit the data to the Raspberry Pi via <strong>UART</strong> (Universal Asynchronous Receiver-Transmitter), which usually deals with digital signals.</p>
+<hr>
+<h2 id="Signal-emission"><a href="#Signal-emission" class="headerlink" title="Signal emission"></a>Signal emission</h2><p><a href="https://imgchr.com/i/UYy5OU" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/07/13/UYy5OU.jpg" alt="UYy5OU.jpg"></a></p>
+<p>After running for about 1-2 hours, the program will automatically halt and exit, leaving these lines in the command area. I felt very confused after the program being exiting automatically for several times. Then, I searched “QObject::connect: Cannot queue arguments of type ‘QTextCursor” on the Internet. Here are some points that I found:</p>
+<blockquote>
+<p>“Unlike a console mode application, which is executed in a sequential manner, a GUI based application is event driven. Functions or methods are executed in response to user’s actions like clicking on a button, selecting an item from a collection or a mouse click etc., called <strong>events</strong>“</p>
+</blockquote>
+<blockquote>
+<p>Widgets used to build the GUI interface act as the source of such events. Each PyQt widget, which is derived from QObject class, is designed to emit ‘<strong>signal</strong>’ in response to one or more events. The signal on its own does not perform any action. Instead, it is ‘connected’ to a ‘<strong>slot</strong>’. The slot can be any <strong>callable Python function</strong></p>
+</blockquote>
+<p>&lt;From <a href="https://www.tutorialspoint.com/pyqt/pyqt_signals_and_slots.htm" target="_blank" rel="noopener">Here</a>&gt;</p>
+<p>The main problem here is that if you want to change many things at the same time, there seems to be some conflicts. For example, during refreshing the image from the camera, the program is also refreshing the humidity data and time, so these two things will cause ‘conflicts’ in the background, causing the program to exit and halt automatically after some time.</p>
+<p><strong>Solution</strong>:</p>
+<p>I have added some signal emission codes into the previous one, so that each task will be added to a list and ‘queue’ and wait to be executed.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">updateSignal_prompt = pyqtSignal(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_camView = pyqtSignal()</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_time = pyqtSignal(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_moisture = pyqtSignal()</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_capture = pyqtSignal(str)</span></pre></td></tr></table></figure>
+
+<p>First of all, 5 function is declared.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_prompt</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> str != <span class="string">""</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">            curScrollValue = self.textEdit_prompt.verticalScrollBar().value()</span></pre></td></tr><tr><td class="code"><pre><span class="line">            self.textEdit_prompt.moveCursor(QTextCursor.End)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            endScrollValue = self.textEdit_prompt.verticalScrollBar().value()</span></pre></td></tr><tr><td class="code"><pre><span class="line">            self.textEdit_prompt.insertHtml(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">if</span> curScrollValue &lt; endScrollValue:</span></pre></td></tr><tr><td class="code"><pre><span class="line">                self.textEdit_prompt.verticalScrollBar().setValue(curScrollValue)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">                self.textEdit_prompt.moveCursor(QTextCursor.End)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_time</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_time.setText(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_moisture</span><span class="params">(self)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_moisture.setText(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">"&lt;h2&gt; Moisture:"</span> + self.lastMoisture + <span class="string">"&lt;/h2&gt;"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_capture</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_capture.setText(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
+
+<p>Also, the <strong>emit</strong> method is used:</p>
+<p>In <strong>capture_auto_switch</strong> function:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.updateSignal_label_capture.emit(</span></pre></td></tr><tr><td class="code"><pre><span class="line">                <span class="string">"&lt;h3&gt;&lt;font color=\"#00FF00\"&gt;Running...&lt;/font&gt;&lt;/h3&gt;"</span>)</span></pre></td></tr></table></figure>
+
+<p>In <strong>refresh_label_time</strong> function:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.updateSignal_label_time.emit(<span class="string">'&lt;h3&gt;'</span> + nowtime + <span class="string">'&lt;/h3&gt;'</span>)</span></pre></td></tr></table></figure>
+
+<p>etc.</p>
+<p><img src="https://s1.ax1x.com/2020/07/13/UY2UHS.png" alt="UY2UHS.png"></p>
+<p>The program has been running for nearly 24 hours, and it did not halt yet. It seems that the problem is solved successfully.</p>
+]]></content>
+      <categories>
+        <category>Dialogue with Plants</category>
+      </categories>
+      <tags>
+        <tag>Dialogue with Plants</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Arduino 1</title>
+    <url>/2020/06/05/Arduino/</url>
+    <content><![CDATA[<p>Yesterday, I have designed an interesting ‘game’ that shows how many times you can press the button in 20 seconds.</p>
+<p><img src="https://s1.ax1x.com/2020/06/05/tyS51U.png" alt="tyS51U.png"></p>
+<p>(Image from <a href="https://www.elektor.com/media/catalog/product/cache/80915e949b605ba30632933a1ad7c951/a/r/arduino-uno-r3.png" target="_blank" rel="noopener">Arduino</a>)</p>
+<p>To achieve this, I have used Arduino IDE(intergreted development environment) and Python as two main tools. First of all, the ‘pyserial’ needs to be installed, which is used to <strong>provide an interface to read information from the serial port</strong> . The ‘pyserial’ links the Arduino with Python.</p>
+<p>Then, ‘serial’ is imported in Python.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> serial</span></pre></td></tr><tr><td class="code"><pre><span class="line">serialPort = <span class="string">'COM3'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">baudRate = <span class="number">9600</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">ser = serial.Serial(serialPort,baudRate,timeout=<span class="number">0.5</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Parameter settings: Serial port =%s, Baud rate =%d'</span>%(serialPort,baudRate))</span></pre></td></tr></table></figure>
+
+<p>Serial port is given in the Tools –&gt; Serial Port, and this tells the IDE which type of socket the Arduino is connected to.</p>
+<p><img src="https://s1.ax1x.com/2020/06/05/tsgUgg.png" alt="tsgUgg.png"></p>
+<p><strong>The baud rate is the rate at which information is transferred in a communication channel.</strong> Timeout is set because otherwise, the program will wait forever if it does not recieve the signal.</p>
+<p>Then, there are some hardwares needed:</p>
+<ol>
+<li>A button</li>
+<li>A resistor</li>
+<li>Several conducting lines</li>
+<li>Breadboard</li>
+<li>Arduino board</li>
+</ol>
+<p>The Schematic:</p>
+<p><a href="https://imgchr.com/i/tsx6gg" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/05/tsx6gg.jpg" alt="tsx6gg.jpg"></a></p>
+<p><img src="https://s1.ax1x.com/2020/06/05/tsRspT.jpg" alt="tsRspT.jpg"></p>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> pushButton = <span class="number">7</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> buttonState = <span class="number">0</span>;  </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> beforeState = <span class="number">0</span>;   </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> presstime = <span class="number">0</span>;  </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="comment">// put your setup code here, to run once:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="built_in">Serial</span>.<span class="built_in">begin</span>(<span class="number">9600</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="built_in">pinMode</span>(pushButton, <span class="literal">INPUT</span>);  </span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="comment">// put your main code here, to run repeatedly:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  buttonState = <span class="built_in">digitalRead</span>(pushButton); </span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="keyword">if</span>(buttonState!=<span class="number">0</span> <span class="keyword">and</span> beforeState==<span class="number">0</span>)&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">     presstime = presstime+<span class="number">1</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">     <span class="built_in">Serial</span>.<span class="built_in">println</span>(presstime);  &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  beforeState=buttonState;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
+
+<p>Here, the pin 7 is used to receive and send the signal, and the button is set to give the input signal. If the button is pressed, the digitalRead(pushButton) will give 0, and if the button is not pressed, digitalRead(pushButton) will give 1. When the button is first pressed, the ‘if’ syntax will not be run, and beforstate is given value 0. When the button is first bounced, the buttonState=1 and beforestate=0, so press time is added 1. This is basically how it works. When each time it is bounced up, the number is added one.</p>
+<p>Then, Python is used to set 20 seconds and find the number of times.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">starttime = time.time()</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> round(time.time() - starttime, <span class="number">0</span>)&gt;=<span class="number">20</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">'game over!'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    string = ser.readline()</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(string)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> len(string)&gt;<span class="number">0</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        s = str(string.strip(),encoding = <span class="string">"utf8"</span> ) </span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(int(s))</span></pre></td></tr><tr><td class="code"><pre><span class="line">ser.close()</span></pre></td></tr></table></figure>
+
+<p>‘time’ module is used here. time.time() is used to find the current time. Here, we round the time to the nearest second. .readline() is used to read one column of data. len(string)&gt;0 is to ensure that not a blank is selected. .strip() is used to remove specific character, and the default is the space and the line break. encoding = “utf8” is used to change byte to string.</p>
+<p>Finally, it looks like this:</p>
+<p><a href="https://imgchr.com/i/tySPYV" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/05/tySPYV.png" alt="tySPYV.png"></a></p>
+<p>I press the button 82 times in 20 seconds. A nice score, isn’t it?</p>
+<p>Appendix:</p>
+<ol>
+<li><a href="https://www.cnblogs.com/lanceyu/p/10201236.html" target="_blank" rel="noopener">https://www.cnblogs.com/lanceyu/p/10201236.html</a></li>
+<li><a href="https://chengnillcom.wordpress.com/2019/06/02/607/" target="_blank" rel="noopener">https://chengnillcom.wordpress.com/2019/06/02/607/</a></li>
+<li><a href="https://www.runoob.com/python3/python-simplestopwatch.html" target="_blank" rel="noopener">https://www.runoob.com/python3/python-simplestopwatch.html</a></li>
+<li><a href="https://www.cnblogs.com/zqifa/p/python-7.html" target="_blank" rel="noopener">https://www.cnblogs.com/zqifa/p/python-7.html</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Dialogue with Plants</category>
+      </categories>
+      <tags>
+        <tag>Dialogue with Plants</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Auto-Capture and Moisture data</title>
     <url>/2020/07/05/Auto-Capture-and-Moisture-data/</url>
     <content><![CDATA[<p>Yesterday, I have added some functions to the previous codes.</p>
@@ -60,73 +176,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Adjustment in equipment and codes</title>
-    <url>/2020/07/13/Adjustment-in-equipment-and-codes/</url>
-    <content><![CDATA[<p>Last few days, I found that the GUI will exit automatically after 1-2 hours, and the humidity data fluctuates too much, which leads to too many uncertainties. Therefore, I decided to fix these two bugs.</p>
-<h2 id="Capacitive-Humidity-Sensor"><a href="#Capacitive-Humidity-Sensor" class="headerlink" title="Capacitive Humidity Sensor"></a>Capacitive Humidity Sensor</h2><p><img src="https://s1.ax1x.com/2020/07/13/UYGpdO.jpg" alt="UYGpdO.jpg"></p>
-<p>I bought a new humidity sensor that determines the humidity by measuring the capacitance of the material. The previous humidity sensor determines the humidity by measuring the resistance of the material. These two types of sensors have some differences in how do they work.</p>
-<p><strong>Capacitive</strong> :</p>
-<ul>
-<li>$$C=\dfrac {\varepsilon A}{4\pi kd}$$ , where $$\varepsilon$$ is the permitivity.</li>
-<li>When the humidity of the environment changes, the permitivity $$\varepsilon$$ will change, so the capacitance of the material will change. We can detect this change using the electric circuits embedded inside the board.</li>
-<li>The permitivity varies almost linearly with the humidity change, so the capacitance varies almost linearly with the humidity change.</li>
-</ul>
-<p><strong>Resistive</strong>:</p>
-<ul>
-<li><p>From the A level Physics coursebook, I also know that:</p>
-<p>$$R=\rho \dfrac {L}{A}$$ , where $$\rho$$ is the resistivity of the resistor, L is the length of the resistor, and A is the cross-sectional area of the resistor.</p>
-</li>
-<li><p>When humidity of the environment changes, the resistivity $$\rho$$ will change, so the resistance of the material will change, so as the voltage across the material. We can convert the analogue voltage signal to digital signal using ADC.</p>
-</li>
-<li><p>However, the resistive sensor lacks of linearity.</p>
-</li>
-</ul>
-<p><img src="https://s1.ax1x.com/2020/07/13/UYaQYT.png" alt="UYaQYT.png"></p>
-<p>This is the humidity data read from the new capacitive humidity sensor. As shown in the graph above, the fluctuation is very small, so the precision increases.</p>
-<p>In this capacitive humidity sensor, the capacitance is converted into voltage signal by electric circuits sealed in the module, so currently, I do not know clearly how does the module achieve this. The analogue voltage signal is read from the capacitive humidity sensor, and then the signal is transmitted to Arduino. The chips in Arduino will convert this analogue signal to digital signal by ADC which is 10 bits, so the value shown on the screen is the digital signal varied from 0-1023. In addition, Arduino will transmit the data to the Raspberry Pi via <strong>UART</strong> (Universal Asychronous Receiver-Transmitter), which usually deals with digital signals.</p>
-<hr>
-<h2 id="Signal-emmision"><a href="#Signal-emmision" class="headerlink" title="Signal emmision"></a>Signal emmision</h2><p><a href="https://imgchr.com/i/UYy5OU" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/07/13/UYy5OU.jpg" alt="UYy5OU.jpg"></a></p>
-<p>After running for about 1-2 hours, the program will automatically halt and exit, leaving these lines in the command area. I felt very confused after the program being exiting automatically for several times. Then, I searched “QObject::connect: Cannot queue arguments of type ‘QTextCursor” on the Internet. Here are some points that I found:</p>
-<blockquote>
-<p>“Unlike a console mode application, which is executed in a sequential manner, a GUI based application is event driven. Functions or methods are executed in response to user’s actions like clicking on a button, selecting an item from a collection or a mouse click etc., called <strong>events</strong>“</p>
-</blockquote>
-<blockquote>
-<p>Widgets used to build the GUI interface act as the source of such events. Each PyQt widget, which is derived from QObject class, is designed to emit ‘<strong>signal</strong>’ in response to one or more events. The signal on its own does not perform any action. Instead, it is ‘connected’ to a ‘<strong>slot</strong>’. The slot can be any <strong>callable Python function</strong></p>
-</blockquote>
-<p>&lt;From <a href="https://www.tutorialspoint.com/pyqt/pyqt_signals_and_slots.htm" target="_blank" rel="noopener">Here</a>&gt;</p>
-<p>The main problem here is that if you want to change many things at the same time, there seems to be some conflicts. For example, during refreshing the image from the camera, the program is also refreshing the humidity data and time, so these two things will cause ‘conflicts’ in the background, causing the program to exit and halt automatically after some time.</p>
-<p><strong>Solution</strong>:</p>
-<p>I have added some signal emmision codes into the previous one, so that each task will be added to a list and ‘queue’ and wait to be executed.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">updateSignal_prompt = pyqtSignal(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_camView = pyqtSignal()</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_time = pyqtSignal(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_moisture = pyqtSignal()</span></pre></td></tr><tr><td class="code"><pre><span class="line">updateSignal_label_capture = pyqtSignal(str)</span></pre></td></tr></table></figure>
-
-<p>First of all, 5 function is declaired.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_prompt</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> str != <span class="string">""</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">            curScrollValue = self.textEdit_prompt.verticalScrollBar().value()</span></pre></td></tr><tr><td class="code"><pre><span class="line">            self.textEdit_prompt.moveCursor(QTextCursor.End)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            endScrollValue = self.textEdit_prompt.verticalScrollBar().value()</span></pre></td></tr><tr><td class="code"><pre><span class="line">            self.textEdit_prompt.insertHtml(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">if</span> curScrollValue &lt; endScrollValue:</span></pre></td></tr><tr><td class="code"><pre><span class="line">                self.textEdit_prompt.verticalScrollBar().setValue(curScrollValue)</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">                self.textEdit_prompt.moveCursor(QTextCursor.End)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_time</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_time.setText(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_moisture</span><span class="params">(self)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_moisture.setText(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">"&lt;h2&gt; Moisture:"</span> + self.lastMoisture + <span class="string">"&lt;/h2&gt;"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update_label_capture</span><span class="params">(self, str)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">        self.label_capture.setText(str)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">return</span></span></pre></td></tr></table></figure>
-
-<p>Also, the <strong>emit</strong> method is used:</p>
-<p>In <strong>capture_auto_switch</strong> function:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.updateSignal_label_capture.emit(</span></pre></td></tr><tr><td class="code"><pre><span class="line">                <span class="string">"&lt;h3&gt;&lt;font color=\"#00FF00\"&gt;Running...&lt;/font&gt;&lt;/h3&gt;"</span>)</span></pre></td></tr></table></figure>
-
-<p>In <strong>refresh_label_time</strong> function:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.updateSignal_label_time.emit(<span class="string">'&lt;h3&gt;'</span> + nowtime + <span class="string">'&lt;/h3&gt;'</span>)</span></pre></td></tr></table></figure>
-
-<p>etc.</p>
-<p><img src="https://s1.ax1x.com/2020/07/13/UY2UHS.png" alt="UY2UHS.png"></p>
-<p>The program has been running for nearly 24 hours, and it did not halt yet. It seems that the problem is solved successfully.</p>
-]]></content>
-      <categories>
-        <category>Dialogue with Plants</category>
-      </categories>
-      <tags>
-        <tag>Dialogue with Plants</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CNN &amp; Classification</title>
     <url>/2020/03/09/CNN-Classification/</url>
     <content><![CDATA[<p>Today, I have read and learnt some codes about the CNN (Convolutional Neural Network) used in classification problems.</p>
@@ -160,55 +209,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Arduino 1</title>
-    <url>/2020/06/05/Arduino/</url>
-    <content><![CDATA[<p>Yesterday, I have designed an interesting ‘game’ that shows how many times you can press the button in 20 seconds.</p>
-<p><img src="https://s1.ax1x.com/2020/06/05/tyS51U.png" alt="tyS51U.png"></p>
-<p>(Image from <a href="https://www.elektor.com/media/catalog/product/cache/80915e949b605ba30632933a1ad7c951/a/r/arduino-uno-r3.png" target="_blank" rel="noopener">Arduino</a>)</p>
-<p>To achieve this, I have used Arduino IDE(intergreted development environment) and Python as two main tools. First of all, the ‘pyserial’ needs to be installed, which is used to <strong>provide an interface to read information from the serial port</strong> . The ‘pyserial’ links the Arduino with Python.</p>
-<p>Then, ‘serial’ is imported in Python.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> serial</span></pre></td></tr><tr><td class="code"><pre><span class="line">serialPort = <span class="string">'COM3'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">baudRate = <span class="number">9600</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">ser = serial.Serial(serialPort,baudRate,timeout=<span class="number">0.5</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Parameter settings: Serial port =%s, Baud rate =%d'</span>%(serialPort,baudRate))</span></pre></td></tr></table></figure>
-
-<p>Serial port is given in the Tools –&gt; Serial Port, and this tells the IDE which type of socket the Arduino is connected to.</p>
-<p><img src="https://s1.ax1x.com/2020/06/05/tsgUgg.png" alt="tsgUgg.png"></p>
-<p><strong>The baud rate is the rate at which information is transferred in a communication channel.</strong> Timeout is set because otherwise, the program will wait forever if it does not recieve the signal.</p>
-<p>Then, there are some hardwares needed:</p>
-<ol>
-<li>A button</li>
-<li>A resistor</li>
-<li>Several conducting lines</li>
-<li>Breadboard</li>
-<li>Arduino board</li>
-</ol>
-<p>The Schematic:</p>
-<p><a href="https://imgchr.com/i/tsx6gg" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/05/tsx6gg.jpg" alt="tsx6gg.jpg"></a></p>
-<p><img src="https://s1.ax1x.com/2020/06/05/tsRspT.jpg" alt="tsRspT.jpg"></p>
-<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> pushButton = <span class="number">7</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> buttonState = <span class="number">0</span>;  </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> beforeState = <span class="number">0</span>;   </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> presstime = <span class="number">0</span>;  </span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="comment">// put your setup code here, to run once:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="built_in">Serial</span>.<span class="built_in">begin</span>(<span class="number">9600</span>);</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="built_in">pinMode</span>(pushButton, <span class="literal">INPUT</span>);  </span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="comment">// put your main code here, to run repeatedly:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">  buttonState = <span class="built_in">digitalRead</span>(pushButton); </span></pre></td></tr><tr><td class="code"><pre><span class="line">  <span class="keyword">if</span>(buttonState!=<span class="number">0</span> <span class="keyword">and</span> beforeState==<span class="number">0</span>)&#123;</span></pre></td></tr><tr><td class="code"><pre><span class="line">     presstime = presstime+<span class="number">1</span>;</span></pre></td></tr><tr><td class="code"><pre><span class="line">     <span class="built_in">Serial</span>.<span class="built_in">println</span>(presstime);  &#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line">  beforeState=buttonState;</span></pre></td></tr><tr><td class="code"><pre><span class="line">&#125;</span></pre></td></tr></table></figure>
-
-<p>Here, the pin 7 is used to receive and send the signal, and the button is set to give the input signal. If the button is pressed, the digitalRead(pushButton) will give 0, and if the button is not pressed, digitalRead(pushButton) will give 1. When the button is first pressed, the ‘if’ syntax will not be run, and beforstate is given value 0. When the button is first bounced, the buttonState=1 and beforestate=0, so press time is added 1. This is basically how it works. When each time it is bounced up, the number is added one.</p>
-<p>Then, Python is used to set 20 seconds and find the number of times.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">starttime = time.time()</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> round(time.time() - starttime, <span class="number">0</span>)&gt;=<span class="number">20</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">'game over!'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    string = ser.readline()</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(string)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> len(string)&gt;<span class="number">0</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        s = str(string.strip(),encoding = <span class="string">"utf8"</span> ) </span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(int(s))</span></pre></td></tr><tr><td class="code"><pre><span class="line">ser.close()</span></pre></td></tr></table></figure>
-
-<p>‘time’ module is used here. time.time() is used to find the current time. Here, we round the time to the nearest second. .readline() is used to read one column of data. len(string)&gt;0 is to ensure that not a blank is selected. .strip() is used to remove specific character, and the default is the space and the line break. encoding = “utf8” is used to change byte to string.</p>
-<p>Finally, it looks like this:</p>
-<p><a href="https://imgchr.com/i/tySPYV" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/05/tySPYV.png" alt="tySPYV.png"></a></p>
-<p>I press the button 82 times in 20 seconds. A nice score, isn’t it?</p>
-<p>Appendix:</p>
-<ol>
-<li><a href="https://www.cnblogs.com/lanceyu/p/10201236.html" target="_blank" rel="noopener">https://www.cnblogs.com/lanceyu/p/10201236.html</a></li>
-<li><a href="https://chengnillcom.wordpress.com/2019/06/02/607/" target="_blank" rel="noopener">https://chengnillcom.wordpress.com/2019/06/02/607/</a></li>
-<li><a href="https://www.runoob.com/python3/python-simplestopwatch.html" target="_blank" rel="noopener">https://www.runoob.com/python3/python-simplestopwatch.html</a></li>
-<li><a href="https://www.cnblogs.com/zqifa/p/python-7.html" target="_blank" rel="noopener">https://www.cnblogs.com/zqifa/p/python-7.html</a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Dialogue with Plants</category>
-      </categories>
-      <tags>
-        <tag>Dialogue with Plants</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Being a Violinsist in 2020 Graduation Ceremony</title>
     <url>/2020/06/14/Being-a-Violinsist-in-2020-Graduation-Ceremony/</url>
     <content><![CDATA[<p>Today, I am a violinist in the 2020 graduation ceremony, and I am very proud of who I am.</p>
@@ -237,6 +237,29 @@
       <categories>
         <category>Activities &amp; Feelings</category>
       </categories>
+  </entry>
+  <entry>
+    <title>Dictionary 2</title>
+    <url>/2020/02/06/Dictionary-2/</url>
+    <content><![CDATA[<p>Today, I learn more about the ‘dictionary’ in Python.</p>
+<p>Then, I have practised the following question.</p>
+<h2 id="Mean-amp-Highest-mark"><a href="#Mean-amp-Highest-mark" class="headerlink" title="Mean &amp; Highest mark"></a>Mean &amp; Highest mark</h2><p>This can be achieved using ‘Dictionary’ and some defined functions. </p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">allStudents=&#123;<span class="string">'Alice'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">88</span>,<span class="string">'Maths'</span>:<span class="number">97</span>,<span class="string">'English'</span>:<span class="number">98</span>,<span class="string">'Arts'</span>:<span class="number">95</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Bob'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">96</span>,<span class="string">'Maths'</span>:<span class="number">88</span>,<span class="string">'English'</span>:<span class="number">92</span>,<span class="string">'Arts'</span>:<span class="number">80</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Carol'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">78</span>,<span class="string">'Maths'</span>:<span class="number">80</span>,<span class="string">'English'</span>:<span class="number">94</span>,<span class="string">'Arts'</span>:<span class="number">92</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Daniel'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">92</span>,<span class="string">'Maths'</span>:<span class="number">93</span>,<span class="string">'English'</span>:<span class="number">70</span>,<span class="string">'Arts'</span>:<span class="number">89</span>&#125;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mean</span><span class="params">(score,subject)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    sum =<span class="number">0</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> score.items():</span></pre></td></tr><tr><td class="code"><pre><span class="line">        sum = sum + v.get(subject,<span class="number">0</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    average = sum/len(score)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> average</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">highest</span><span class="params">(score,subject)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    a=[]</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> score.items(): </span></pre></td></tr><tr><td class="code"><pre><span class="line">        a.append(v.get(subject,<span class="number">0</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> allStudents.items():</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> v.get(subject,<span class="number">0</span>) == max(a):</span></pre></td></tr><tr><td class="code"><pre><span class="line">            person = k</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> str(max(a))+ <span class="string">' ( '</span>+ person + <span class="string">' )'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">            </span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Maths is:'</span>+ str(mean(allStudents,<span class="string">'Maths'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Maths'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Chinese is:'</span>+ str(mean(allStudents,<span class="string">'Chinese'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Chinese'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for English is:'</span>+ str(mean(allStudents,<span class="string">'English'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'English'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Arts is:'</span>+ str(mean(allStudents,<span class="string">'Arts'</span>))+ <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Arts'</span>)))</span></pre></td></tr></table></figure>
+
+
+
+<p>In lines 1 to 4, students’ names and their corresponding marks for 4 subjects are input into the dictionary. Here, the keys are names, because they are unique for small samples of people, and another dictionary is used for gathering marks with their corresponding subjects.</p>
+<p>In lines 5-10, ‘mean’ function is defined by myself, which aims to find the mean score for particular subjects. Multiple assignment (多重赋值) is used as shown in line 7, which means that keys in ‘score’ will be assigned to ‘k’, and values in ‘score’ will be assigned to ‘v’, which is equivalent to k = score.keys() and v = score.values(). In addition, in line 8, ‘get’ method is used, so that when the input key has no corresponding values in the ‘score’, the return value will be 0. In doing so, one obstacle will not make the whole program crack down. Then, it is just summing and averaging.</p>
+<p>In lines 12 -19, ‘highest’ function is defined, which aims to find the highest score. Here, I used the ‘append’ method instead of a = a + list(v.get(subject,0)) due to the fact that the results are integers which cannot be transferred to a list. Rather, ‘append’ here means that in the 1st line of ‘allStudents’, the specific subject(key), say ‘Chinese’, is being looked for. Then, the corresponding value, 88, is noted and the program will move to the next line. In the 2nd line, following the same process, 96, is noted, and so on. Furthermore, the next ‘for’ loop is used to find the person who has scored the highest mark. If the value of the ‘subject’(keys) is the maximum one, then the person(k) is noted.</p>
+<p>Finally, as shown in figure below, the results are printed by calling those functions.</p>
+<p><img src="https://s2.ax1x.com/2020/02/07/1cGRHg.png" alt="1cGRHg.png"></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
   </entry>
   <entry>
     <title>Dictionary</title>
@@ -310,6 +333,54 @@
       </categories>
       <tags>
         <tag>COVID-19</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Feelings after getting the award</title>
+    <url>/2020/01/09/Feelings-after-getting-the-award/</url>
+    <content><![CDATA[<p>Today, finally, I got the silver award for the 2019 BPho. </p>
+<p><img src="https://s2.ax1x.com/2020/01/09/lf9UT1.jpg" alt="lf9UT1.jpg"></p>
+<p>Looking at the certificate, I had many words to say. Although it is only a silver award, it is quite unique for me. I have known this competition since the summer holiday in 2019. Having a first look at the past paper of BPho, I nearly can’t do any of those questions, because I only knew a little from my IGCSE course, which was absolutely not enough. Then I decided to try my best to work out as many questions as possible. It was really a tough time for me, especially at the beginning. I went to school at daytime, so the only time for me was the evening. Every day, I felt so exhausted after a busy school day, but for the BPho, for my dream, I kept telling myself ‘Come on !’. A few weeks later, I managed to do some of the questions, and I felt a little proud for myself. </p>
+<p>On 16th of November, 2019, I attended the BPho. After getting the paper, I focused on my paper and did not think about anything else. As time passed by, the questions became more difficult, and at some instant, I was a little bit impatient, because there were more and more questions that I can’t manage  to do, but later on, I told myself ‘Calm down! Try your best, and it will be fine’. Therefore, one question successfully reminded me of a question about the spring oscillator, which I have done before, which inspired me a lot. I still remembered that question, which was about letting a double planks connected by two strings falling from a height, and the two strings will make the planks to do simple harmonic motion. This gave me a lot of confidence, and encouraged me to do more questions. Although it was difficult to pay 100% attention throughout the 160 minutes, and there were some questions I did wrong which I should have done it correctly, I was appreciated when the competition has finished, because I applied at least 70% of what I have learnt. Meanwhile, I felt a little bit upset, because I thought there would be some questions about the electric circuits in section 2, such as the Kirchhoff’s law and the Wheatstone bridge, but they did not appear in the paper.</p>
+<p>Now, I got the result. I was fortunate, and I want to say thank you to my father, who helped me a lot during the preparation of the BPho, and of course, I want to say thank you to myself. It is me who kept challenging the extreme and never gave up.</p>
+<p>This silver award is just a starting point. There is still a long way to go. Well done and keep it up!</p>
+]]></content>
+      <categories>
+        <category>BPho</category>
+      </categories>
+      <tags>
+        <tag>BPho</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Feelings and Reflections on the Garbage Classification Programme</title>
+    <url>/2020/04/11/Feelings-and-Reflections-on-the-Garbage-Classification-Programme/</url>
+    <content><![CDATA[<p>Being a good student requires a variety of skills including time management, teamwork, keeping good focus and facing challenges, which I have learnt during my experience of taking part in the Garbage Classification Programme which aims to determine which class the rubbish belongs to through image identification and CNN algorithm. </p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7OGwt.png" alt="G7OGwt.png"></p>
+<p>&lt;Image from <a href="https://youth-time.eu/wp-content/uploads/2018/11/b7d41aa04e4da12ee42f355b9c8e1b10_XL.jpg&gt;" target="_blank" rel="noopener">https://youth-time.eu/wp-content/uploads/2018/11/b7d41aa04e4da12ee42f355b9c8e1b10_XL.jpg&gt;</a></p>
+<p>At the beginning, I had absolutely no idea what the Garbage Classification was and how can it benefit people all over the world. During the process of learning, I gradually found the importance of Garbage Classification which can benefit our economy, society and ecosystem.</p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7OWpF.png" alt="G7OWpF.png"></p>
+<p>&lt; Image from <a href="https://ichef.bbci.co.uk/news/1024/cpsprodpb/1BFF/production/_109676170_gettyimages-1166817364-2.jpg" target="_blank" rel="noopener">https://ichef.bbci.co.uk/news/1024/cpsprodpb/1BFF/production/_109676170_gettyimages-1166817364-2.jpg</a> &gt;</p>
+<p>First of all, with increasing amount of rubbish produced every day and deteriorating environment, people have increasing concern about how to deal with a significant amount of rubbish and the concept of garbage classification was presented. With classified rubbish, the soil erosion will be greatly reduced, because some of the rubbish, such as battery and plastic bags, are not biodegradable, meaning that they cannot or it takes very long time for them to be broken down by the soil. Staying in the soil, those rubbish will make the field useless and decrease the output for the agriculture goods, which will negatively affect the economy. </p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7vGwR.png" alt="G7vGwR.png"></p>
+<p>&lt;Image from <a href="https://res.cloudinary.com/fleetnation/image/private/c_fit,w_1120/g_south,l_text:style_gothic2:%C2%A9%20Ashley%20Cooper,o_20,y_10/g_center,l_watermark4,o_25,y_50/v1495745317/sfjlaup4gwdorkymjnqz.jpg&gt;" target="_blank" rel="noopener">https://res.cloudinary.com/fleetnation/image/private/c_fit,w_1120/g_south,l_text:style_gothic2:%C2%A9%20Ashley%20Cooper,o_20,y_10/g_center,l_watermark4,o_25,y_50/v1495745317/sfjlaup4gwdorkymjnqz.jpg&gt;</a></p>
+<p>In addition, some rubbish, such as rot food, will emit gases with bad smell and attracts many flies, which makes citizens very uncomfortable when passing through the region. This has worsened the environment significantly. What is more, some animals will accidently take in some the toxic plastic and die in a few months, which makes the ecosystem unbalanced.</p>
+<p>Therefore, the garbage classification is needed to improve the situation. Different classes of rubbish can be reused in different ways, so that the resources can be used more efficiently. For example, disposable chopsticks, which are widely used in China, can be reprocessed to produce paper which will be otherwise produced by cutting down thousands and millions of trees. Also, some rubbish, such as wooden stuff, can be used to burn to produce electricity and providing heat for city dwellers in winter. As a result, different classes of rubbish can be sent to different factories to reprocess them and then reuse them. Therefore, instead of just landfill unclassified rubbish, we can reuse 60%-70% of the rubbish according to their classes to change them from rubbish to resources, and in the battle between human beings and rubbish, the rubbish can be changed from enemies to friends.</p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7X33F.png" alt="G7X33F.png"></p>
+<p>&lt;Image from <a href="https://cdn.shopify.com/s/files/1/0773/5915/articles/Ryclying_pic_blog_2_1600x.jpg?v=1455084942&gt;" target="_blank" rel="noopener">https://cdn.shopify.com/s/files/1/0773/5915/articles/Ryclying_pic_blog_2_1600x.jpg?v=1455084942&gt;</a></p>
+<p>However, in China, a large proportion of people are only encouraged to do the garbage classification, but they do not know how. Many people cannot tell which class the rubbish belongs to, so although there are different rubbish bins, they cannot correctly throw the rubbish into the correct bin. Therefore, I decided to learn some AI techniques to give information to people about the classes of the rubbish and help them classify the rubbish more easily. Although some people might argue that it is impossible for the machine to improve the garbage classification, because different classes of rubbish was put together into the rubbish bag by each households and it is very hard for the machine to identify the rubbish in the bag and then classify them, I holds a different view. In some occasions, such as in the airport, people often throw only one or two rubbish into the rubbish bin instead of a bag of them. The AI machine can be used in these situations, telling people the class in which the rubbish should be thrown, so that people get more knowledge about the classes, and when they repeat this in many situations for many times, they will get used to this way of thinking. Therefore, they can correctly classify the rubbish at home.</p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7jPbR.png" alt="G7jPbR.png"></p>
+<p>&lt;Image from <a href="https://i.ytimg.com/vi/7C6I_wuvvhY/maxresdefault.jpg&gt;" target="_blank" rel="noopener">https://i.ytimg.com/vi/7C6I_wuvvhY/maxresdefault.jpg&gt;</a></p>
+<p>In reality, in Shanghai, China, it is compulsory for local citizens to do garbage classification, and some people, especially the old people, have little idea of the classes, and this has caused some trouble for their normal daily life. Citizens need to spend a lot of time searching for the type of the rubbish, which is very inefficient and boring. This may lead to some complains among the society, and give disincentives for citizens to do the meaningful things. Therefore, I wonder whether this complex thing can be done easily and interestingly, so I came up with the idea of connecting the garbage classification with modern technology instead of just a rule. The CNN algorithm of machine learning can train a model for a machine which can be used to identify the rubbish quickly and accurately. For instance, citizens only needs to show the rubbish in front of the camera, and then the class will be shown on the displayed screen, so that it will arouse the curiosity of children, adults, mid-aged people and aged-people, so that people can do the meaningful things happily. Due to the fact that it is not necessary for each one to know exact class of the rubbish, the garbage classification campaign can be done more effectively and burden of memory on residents can be reduced.</p>
+<p><img src="https://s1.ax1x.com/2020/04/11/G7jqQe.png" alt="G7jqQe.png"></p>
+<p>&lt;Image from <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9dWakreHNMCnKp2e05FKeJJhqJ4IiGyz_eJr0YDQPSG8LLZyT&amp;s&gt;" target="_blank" rel="noopener">https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9dWakreHNMCnKp2e05FKeJJhqJ4IiGyz_eJr0YDQPSG8LLZyT&amp;s&gt;</a></p>
+<p>In conclusion, after doing the programme, I have spent some valuable time thinking about the future prospects of the garbage classification that can be applied to our real life, and currently I am still training the model and improve the algorithms. Hopefully, one day in the future, the AI techniques of machine learning and image identification can be used widely in the world, and this is my final intention of doing this programme.</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Machine Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -569,50 +640,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Dictionary 2</title>
-    <url>/2020/02/06/Dictionary-2/</url>
-    <content><![CDATA[<p>Today, I learn more about the ‘dictionary’ in Python.</p>
-<p>Then, I have practised the following question.</p>
-<h2 id="Mean-amp-Highest-mark"><a href="#Mean-amp-Highest-mark" class="headerlink" title="Mean &amp; Highest mark"></a>Mean &amp; Highest mark</h2><p>This can be achieved using ‘Dictionary’ and some defined functions. </p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">allStudents=&#123;<span class="string">'Alice'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">88</span>,<span class="string">'Maths'</span>:<span class="number">97</span>,<span class="string">'English'</span>:<span class="number">98</span>,<span class="string">'Arts'</span>:<span class="number">95</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Bob'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">96</span>,<span class="string">'Maths'</span>:<span class="number">88</span>,<span class="string">'English'</span>:<span class="number">92</span>,<span class="string">'Arts'</span>:<span class="number">80</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Carol'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">78</span>,<span class="string">'Maths'</span>:<span class="number">80</span>,<span class="string">'English'</span>:<span class="number">94</span>,<span class="string">'Arts'</span>:<span class="number">92</span>&#125;,</span></pre></td></tr><tr><td class="code"><pre><span class="line">             <span class="string">'Daniel'</span>:&#123;<span class="string">'Chinese'</span>:<span class="number">92</span>,<span class="string">'Maths'</span>:<span class="number">93</span>,<span class="string">'English'</span>:<span class="number">70</span>,<span class="string">'Arts'</span>:<span class="number">89</span>&#125;&#125;</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mean</span><span class="params">(score,subject)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    sum =<span class="number">0</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> score.items():</span></pre></td></tr><tr><td class="code"><pre><span class="line">        sum = sum + v.get(subject,<span class="number">0</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    average = sum/len(score)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> average</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">highest</span><span class="params">(score,subject)</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    a=[]</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> score.items(): </span></pre></td></tr><tr><td class="code"><pre><span class="line">        a.append(v.get(subject,<span class="number">0</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> k,v <span class="keyword">in</span> allStudents.items():</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">if</span> v.get(subject,<span class="number">0</span>) == max(a):</span></pre></td></tr><tr><td class="code"><pre><span class="line">            person = k</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">return</span> str(max(a))+ <span class="string">' ( '</span>+ person + <span class="string">' )'</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">            </span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Maths is:'</span>+ str(mean(allStudents,<span class="string">'Maths'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Maths'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Chinese is:'</span>+ str(mean(allStudents,<span class="string">'Chinese'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Chinese'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for English is:'</span>+ str(mean(allStudents,<span class="string">'English'</span>)) + <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'English'</span>))) </span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'The mean for Arts is:'</span>+ str(mean(allStudents,<span class="string">'Arts'</span>))+ <span class="string">', and the highest score is '</span>+ str(highest(allStudents,<span class="string">'Arts'</span>)))</span></pre></td></tr></table></figure>
-
-
-
-<p>In lines 1 to 4, students’ names and their corresponding marks for 4 subjects are input into the dictionary. Here, the keys are names, because they are unique for small samples of people, and another dictionary is used for gathering marks with their corresponding subjects.</p>
-<p>In lines 5-10, ‘mean’ function is defined by myself, which aims to find the mean score for particular subjects. Multiple assignment (多重赋值) is used as shown in line 7, which means that keys in ‘score’ will be assigned to ‘k’, and values in ‘score’ will be assigned to ‘v’, which is equivalent to k = score.keys() and v = score.values(). In addition, in line 8, ‘get’ method is used, so that when the input key has no corresponding values in the ‘score’, the return value will be 0. In doing so, one obstacle will not make the whole program crack down. Then, it is just summing and averaging.</p>
-<p>In lines 12 -19, ‘highest’ function is defined, which aims to find the highest score. Here, I used the ‘append’ method instead of a = a + list(v.get(subject,0)) due to the fact that the results are integers which cannot be transferred to a list. Rather, ‘append’ here means that in the 1st line of ‘allStudents’, the specific subject(key), say ‘Chinese’, is being looked for. Then, the corresponding value, 88, is noted and the program will move to the next line. In the 2nd line, following the same process, 96, is noted, and so on. Furthermore, the next ‘for’ loop is used to find the person who has scored the highest mark. If the value of the ‘subject’(keys) is the maximum one, then the person(k) is noted.</p>
-<p>Finally, as shown in figure below, the results are printed by calling those functions.</p>
-<p><img src="https://s2.ax1x.com/2020/02/07/1cGRHg.png" alt="1cGRHg.png"></p>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Loops</title>
-    <url>/2019/12/24/Loops/</url>
-    <content><![CDATA[<p>Last week, I have learned 2 different types of loops in Python, which are__ ‘for’ loop__ and <strong>‘while’ loop</strong>. I think the main difference between these 2 loops are that ‘for’ loops can deal with the situation where the number of loops is known, and ‘while’ loops are chosen if the number of loops is unknown.</p>
-<p>Later, I did some practise. For example, I wrote some codes to display the pattern like this.</p>
-<h2 id="Pattern"><a href="#Pattern" class="headerlink" title="Pattern"></a>Pattern</h2><p><img src="https://s2.ax1x.com/2020/01/30/11F3uQ.png" alt="11F3uQ.png"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">6</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">print</span> (i,<span class="number">1</span>,i,i**<span class="number">2</span>,i**<span class="number">3</span>)</span></pre></td></tr></table></figure>
-
-<p>After writing these codes, I realized that if you want to <strong>print in a line, just use comma to separate different items, or add (end =’’)</strong> .</p>
-<h2 id="Multiplication-Table"><a href="#Multiplication-Table" class="headerlink" title="Multiplication Table"></a>Multiplication Table</h2><p>In the following day, I wrote a program to show the multiplication table like this.<a href="https://imgchr.com/i/lP5QCq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/24/lP5QCq.md.png" alt="lP5QCq.md.png"></a></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range (<span class="number">1</span>,(i+<span class="number">1</span>)):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">print</span> (str(i) + <span class="string">'*'</span> + str(j) + <span class="string">'='</span>, i*j,end = <span class="string">' '</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">''</span>)</span></pre></td></tr></table></figure>
-
-<p>This is an example of a nested loop. The inside part will be executed first, and then the outside part.  Adding (print(‘’)) in the last line is a very smart idea, because the end of each line will be occupied by a blank, so that the next figure begins in the next line.</p>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>List</title>
     <url>/2019/12/26/List/</url>
     <content><![CDATA[<p>A few days ago, l have learned the lists in Python.</p>
@@ -641,21 +668,6 @@
       <tags>
         <tag>Python</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Markdown语法</title>
-    <url>/2019/12/08/Markdown%E8%AF%AD%E6%B3%95/</url>
-    <content><![CDATA[<p>Hello!</p>
-<ol>
-<li><p><a href="https://imgchr.com/" target="_blank" rel="noopener">https://imgchr.com/</a></p>
-</li>
-<li><p><a href="http://webdemo.myscript.com/views/math.html#/demo/equation" target="_blank" rel="noopener">http://webdemo.myscript.com/views/math.html#/demo/equation</a></p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Testing</category>
-      </categories>
   </entry>
   <entry>
     <title>Matplotlib 2</title>
@@ -689,6 +701,119 @@
 
 <p><a href="https://imgchr.com/i/JI0YPx" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/28/JI0YPx.png" alt="JI0YPx.png"></a></p>
 <p>Here, “kind=’reg’” means regression, so the linear regression is automatically done. The univariate graphs are shown at the top and right of the graph, and the bivariate graph is shown at the centre. The shaded area represents the loss of the regression.</p>
+]]></content>
+      <categories>
+        <category>Data analysis</category>
+      </categories>
+      <tags>
+        <tag>Data analysis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Markdown语法</title>
+    <url>/2019/12/08/Markdown%E8%AF%AD%E6%B3%95/</url>
+    <content><![CDATA[<p>Hello!</p>
+<ol>
+<li><p><a href="https://imgchr.com/" target="_blank" rel="noopener">https://imgchr.com/</a></p>
+</li>
+<li><p><a href="http://webdemo.myscript.com/views/math.html#/demo/equation" target="_blank" rel="noopener">http://webdemo.myscript.com/views/math.html#/demo/equation</a></p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Testing</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Multithreading</title>
+    <url>/2020/06/24/Multithreading/</url>
+    <content><![CDATA[<p>Yesterday, I have learnt an important concept in computer architecture called “Multithreading”. It is the ability of a CPU to provide multiple threads of execution concurrently, supported by the operating system.</p>
+<p><img src="https://s1.ax1x.com/2020/06/24/Nwl21f.png" alt="Nwl21f.png"></p>
+<p>&lt; Image from <a href="https://pitchenginelive.blob.core.windows.net/refinery/28f29690-4305-4640-95e9-c04dab195652/Gallery/4df83d29-aac3-4158-aed7-103e1aa26745.png" target="_blank" rel="noopener">Here</a>) &gt;</p>
+<h2 id="Example-code"><a href="#Example-code" class="headerlink" title="Example code"></a>Example code</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span><span class="params">()</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        nowtime = time.strftime(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">'%Y-%m-%d %H:%M:%S'</span>, time.localtime(time.time()))</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">"func1: "</span> + nowtime)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        time.sleep(<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"func1 ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func2</span><span class="params">()</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        nowtime = time.strftime(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">'%Y-%m-%d %H:%M:%S'</span>, time.localtime(time.time()))</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">"func2: "</span> + nowtime)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        time.sleep(<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"func2 ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:  </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1 = threading.Thread(target=func1)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1.setDaemon(<span class="literal">True</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1.start()  </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2 = threading.Thread(target=func2)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2.setDaemon(<span class="literal">True</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2.start()</span></pre></td></tr><tr><td class="code"><pre><span class="line">    time.sleep(<span class="number">3</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"main ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'This is not a line of codes in the main'</span>)</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/06/24/NwMP9f.png" alt="NwMP9f.png"></p>
+<ul>
+<li><p>I learnt this concept from this example code above. <strong>func1()</strong> and <strong>func2()</strong> are all <strong>child thread</strong>, and the lines below “if <strong>name</strong> == ‘<strong>main</strong>‘:  “ are the <strong>main thread</strong>. </p>
+</li>
+<li><p><strong>func1()</strong> is used to print the current time with 1 second interval for 10 times, and <strong>func2()</strong> is used to print the current time with 2 second interval for 10 times. Therefore,  <strong>func1()</strong> is runed for 10 seconds, and <strong>func2()</strong> is runed for 20 seconds given that they are run fully.</p>
+</li>
+<li><p>if  __ name __ == ‘__ main __’ means if the codes is run directly, this will be executed. However, if this .py file is imported, it will not be executed.</p>
+<p>e.g. </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threadTest</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">threadTest.func1()</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/NwM4xS" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/24/NwM4xS.png" alt="NwM4xS.png"></a></p>
+</li>
+<li><p><strong>.setDaemon(true)</strong> means this child thread will end as the main thread ends, and the default for this method is True.</p>
+</li>
+<li><p><strong>t1.start()</strong> means it is the background that process the data instead of the program.</p>
+</li>
+</ul>
+<h2 id="Another-example-of-multithreading"><a href="#Another-example-of-multithreading" class="headerlink" title="Another example of multithreading"></a>Another example of multithreading</h2><p><img src="https://s1.ax1x.com/2020/06/24/NwQMdA.jpg" alt="NwQMdA.jpg"></p>
+<ul>
+<li><p>Assume t is the main thread, t1,t2 are the child thread.</p>
+</li>
+<li><p>Here, <strong>t1.setDeamon(False)</strong>, meaning that the main thread will end when t1 ends, so at the moment where t1 ends, t2 is not ending, but it is cut off.</p>
+</li>
+<li><p>E.g.</p>
+<p>t is the event that a person drives from A to B</p>
+<p>t1 is the event that the person get off the car</p>
+<p>t2 is the event that the music is on</p>
+<p>When the person gets off the car, the music is not necessarily stopped, but we need to switch off the music when person gets off the car.</p>
+<h2 id="Multithreading-in-the-program"><a href="#Multithreading-in-the-program" class="headerlink" title="Multithreading in the program"></a>Multithreading in the program</h2><p>The main thread is the graphic interface that allows me to click the button to take a photo</p>
+<p>Two chil threads are collecting data from the humidity sensor and taking photo from the plants</p>
+<p>When the graphic interface is closed, it makes nonsense to still turn on the camera and humidity sensor, so the <strong>setDaemon(True)</strong> is for both humidity sensor and camera</p>
+<p>In conclusion, the multithreading allows the CPU to do many threads(tasks) at the same time, which is more convenient and efficient.</p>
+<p>​      </p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Dialogue with Plants</category>
+      </categories>
+      <tags>
+        <tag>Dialogue with Plants</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>My participation in 2019-nCoV Prevention &amp; Treatment Project</title>
+    <url>/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/</url>
+    <content><![CDATA[<h3 id="Yesterday-on-the-30th-of-January-the-World-Health-Organization-has-declared-that-the-coronavirus-in-China-a-global-health-emergency"><a href="#Yesterday-on-the-30th-of-January-the-World-Health-Organization-has-declared-that-the-coronavirus-in-China-a-global-health-emergency" class="headerlink" title="Yesterday, on the 30th of January, the World Health Organization has declared that the coronavirus in China a global health emergency."></a>Yesterday, on the 30th of January, the World Health Organization has declared that the coronavirus in China a global health emergency.</h3><p>I was shocked when hearing this news early in the morning. Initially, I thought it was only a regional outbreak in Wuhan, the city at the centre of the outbreak, but then the virus has spread to almost everywhere in China, and now around the world. Until 30th of January, the number of deaths has increased to 170, and there were 7711 confirmed cases and 1370 suspected cases.  </p>
+<p><img src="https://s2.ax1x.com/2020/01/31/13xu5T.jpg" alt="13xu5T.jpg"></p>
+<p>First of all, I felt so depressed about this news, and wanted to thank for all the doctors and nurses fighting for the coronavirus, and felt so sorry for those who have suffered from this virus during the Chinese New Year. Then, I decided to do something for patients and medical staffs from all over the world, especially Wuhan, China.<br>As a citizen, I have been told by the news that the full protecting clothes for medical staffs and facial masks everyone were in short supply but in high demand. In addition, I realised that some materials must be in shortage, because this size of this 2019-nCoV was unprecedented. Therefore, I wanted to use my faint action to help patients who needs the warmth from everyone. As the saying goes, ‘Actions speak louder than words’, I decided to donate my own money from the ‘red packets’ to help people suffering from this disease, especially in Wuhan.<br>Fortunately, I found the ‘Novel Coronavirus Prevention &amp; Treatment Projects’ and donated 500 RMB to the Project Hope, a charity organisation. Although, the money itself has no intrinsic value, the compassion and kindness behind this activity is invaluable, which cannot be measured using money.<br><strong>Furthermore, I wanted to say thank you to foreign people who hold great concern about the fighting for virus in China. It was your greeting and encouragement that gave us confidence and strength. The virus does not need a passport, and we are the community of shared future for mankind. Virus can be isolated, but the compassion and kindness cannot. The compassion and kindness are like a bridge, connecting people from all over the world.</strong></p>
+<p><strong>Finally,  I hope that with appropriate prevention and confidence, which can be seen as the best vaccine, we can definitely win the smokeless battle!</strong></p>
+]]></content>
+      <categories>
+        <category>Activities &amp; Feelings</category>
+      </categories>
+      <tags>
+        <tag>COVID-19</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Matplotlib</title>
+    <url>/2020/04/25/Matplotlib/</url>
+    <content><![CDATA[<p>Today, I have learnt some useful methods about the matplotlib.</p>
+<h2 id="Area-and-population-in-California-City"><a href="#Area-and-population-in-California-City" class="headerlink" title="Area and population in California City"></a>Area and population in California City</h2><p><img src="https://s1.ax1x.com/2020/04/25/Jy8oKs.png" alt="Jy8oKs.png"></p>
+<p>&lt;Image from <a href="https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;" target="_blank" rel="noopener">https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;</a></p>
+<p>First of all, the <code>csv</code> file is loaded by <code>pd.read_csv()</code>.</p>
+<p><img src="https://s1.ax1x.com/2020/04/25/JyQcfH.png" alt="JyQcfH.png"></p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">lat,lon = cities[<span class="string">'latd'</span>],cities[<span class="string">'longd'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">population,area = cities[<span class="string">'population_total'</span>],cities[<span class="string">'area_total_km2'</span>]</span></pre></td></tr></table></figure>
+
+<p>The lattitude and longitude of the city and its corresponding area and population is the interested data, so they are selected from the file.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">plt.scatter(lon,lat,label=<span class="literal">None</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">            c=np.log10(population),cmap=<span class="string">'viridis'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">            s=area,linewidth=<span class="number">0</span>,alpha=<span class="number">0.5</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.axis(aspect=<span class="string">'equal'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'longitude'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'latitude'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.colorbar(label=<span class="string">'log$_&#123;10&#125;$(population)'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.clim(<span class="number">3</span>,<span class="number">7</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> area <span class="keyword">in</span> [<span class="number">100</span>,<span class="number">300</span>,<span class="number">500</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    plt.scatter([],[],c=<span class="string">'k'</span>,alpha=<span class="number">0.3</span>,s=area,</span></pre></td></tr><tr><td class="code"><pre><span class="line">                label=str(area) + <span class="string">'km$^2$'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.legend(scatterpoints=<span class="number">1</span>,frameon=<span class="literal">True</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">           labelspacing=<span class="number">1</span>,title=<span class="string">'City Area'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'California Cities: Area and Population'</span>)</span></pre></td></tr></table></figure>
+
+<p>Scattered graph is used here. The x-axis stands for the longitude of the city and the y-axis stands for the lattitude of the city. Different colors are used to represent different number (density) of population. As the population is too large, the log scale is used to represent the large number. <code>s</code> is the size of the point on the scattered diagrame which represents the area of the city. <code>cmap</code> is the parameter used to set the type of colormap, such as ‘binary’ and ‘viridis’.</p>
+<p>Here, the scale used in the x-axis and y-axis is the same. What is more, areas of 100, 300, 500 are used to give an approximation of the relation between the size of the circle and the area. Note that in line 11, x value and y value are none, so the legend is set using labels instead of x,y values, so <code>plt.legend()</code> must be used to show the legend. Otherwize, the legend will not be shown. </p>
+<p><a href="https://imgchr.com/i/Jy1wdK" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy1wdK.png" alt="Jy1wdK.png"></a></p>
+<p>The graph shows the distribution of area and population from North-west to South-east in California.</p>
+<h2 id="2D-Histogram"><a href="#2D-Histogram" class="headerlink" title="2D Histogram"></a>2D Histogram</h2><figure class="highlight py"><table><tr><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">cov = [[<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]</span></pre></td></tr><tr><td class="code"><pre><span class="line">x,y = np.random.multivariate_normal(mean,cov,<span class="number">10000</span>).T</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.hist2d(x,y,bins=<span class="number">30</span>,cmap=<span class="string">'Blues'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">cb = plt.colorbar()</span></pre></td></tr><tr><td class="code"><pre><span class="line">cb.set_label(<span class="string">'counts in bin'</span>)</span></pre></td></tr></table></figure>
+
+<p>The Mulrivariate Gaussian Distribution is used to generate the x-axis and y-axis of the graph. <code>bins</code> parameter is used to define the number of equal-width bins in the range. </p>
+<p><a href="https://imgchr.com/i/Jy3eYD" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy3eYD.md.png" alt="Jy3eYD.md.png"></a></p>
+<p>This diagrame has very important applications in my opinion. For example, in a shop, the enterprise can have an idea of the popularity of different goods by looking at the density of people in that area. This can be achieved by using an infrared detector which detects the heat emitted from human beings. The darker the color, the more people there are in that area. In doing so, the enterprise can adjust the supply of different products according to different demand to maximise their profit.</p>
+<p><a href="https://imgchr.com/i/Jy89N8" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy89N8.png" alt="Jy89N8.png"></a></p>
+<p>&lt;Image from <a href="https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;" target="_blank" rel="noopener">https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;</a></p>
 ]]></content>
       <categories>
         <category>Data analysis</category>
@@ -803,55 +928,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Feelings after getting the award</title>
-    <url>/2020/01/09/Feelings-after-getting-the-award/</url>
-    <content><![CDATA[<p>Today, finally, I got the silver award for the 2019 BPho. </p>
-<p><img src="https://s2.ax1x.com/2020/01/09/lf9UT1.jpg" alt="lf9UT1.jpg"></p>
-<p>Looking at the certificate, I had many words to say. Although it is only a silver award, it is quite unique for me. I have known this competition since the summer holiday in 2019. Having a first look at the past paper of BPho, I nearly can’t do any of those questions, because I only knew a little from my IGCSE course, which was absolutely not enough. Then I decided to try my best to work out as many questions as possible. It was really a tough time for me, especially at the beginning. I went to school at daytime, so the only time for me was the evening. Every day, I felt so exhausted after a busy school day, but for the BPho, for my dream, I kept telling myself ‘Come on !’. A few weeks later, I managed to do some of the questions, and I felt a little proud for myself. </p>
-<p>On 16th of November, 2019, I attended the BPho. After getting the paper, I focused on my paper and did not think about anything else. As time passed by, the questions became more difficult, and at some instant, I was a little bit impatient, because there were more and more questions that I can’t manage  to do, but later on, I told myself ‘Calm down! Try your best, and it will be fine’. Therefore, one question successfully reminded me of a question about the spring oscillator, which I have done before, which inspired me a lot. I still remembered that question, which was about letting a double planks connected by two strings falling from a height, and the two strings will make the planks to do simple harmonic motion. This gave me a lot of confidence, and encouraged me to do more questions. Although it was difficult to pay 100% attention throughout the 160 minutes, and there were some questions I did wrong which I should have done it correctly, I was appreciated when the competition has finished, because I applied at least 70% of what I have learnt. Meanwhile, I felt a little bit upset, because I thought there would be some questions about the electric circuits in section 2, such as the Kirchhoff’s law and the Wheatstone bridge, but they did not appear in the paper.</p>
-<p>Now, I got the result. I was fortunate, and I want to say thank you to my father, who helped me a lot during the preparation of the BPho, and of course, I want to say thank you to myself. It is me who kept challenging the extreme and never gave up.</p>
-<p>This silver award is just a starting point. There is still a long way to go. Well done and keep it up!</p>
-]]></content>
-      <categories>
-        <category>BPho</category>
-      </categories>
-      <tags>
-        <tag>BPho</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Matplotlib</title>
-    <url>/2020/04/25/Matplotlib/</url>
-    <content><![CDATA[<p>Today, I have learnt some useful methods about the matplotlib.</p>
-<h2 id="Area-and-population-in-California-City"><a href="#Area-and-population-in-California-City" class="headerlink" title="Area and population in California City"></a>Area and population in California City</h2><p><img src="https://s1.ax1x.com/2020/04/25/Jy8oKs.png" alt="Jy8oKs.png"></p>
-<p>&lt;Image from <a href="https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;" target="_blank" rel="noopener">https://ontheworldmap.com/usa/state/california/map-of-california-max.jpg&gt;</a></p>
-<p>First of all, the <code>csv</code> file is loaded by <code>pd.read_csv()</code>.</p>
-<p><img src="https://s1.ax1x.com/2020/04/25/JyQcfH.png" alt="JyQcfH.png"></p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">lat,lon = cities[<span class="string">'latd'</span>],cities[<span class="string">'longd'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">population,area = cities[<span class="string">'population_total'</span>],cities[<span class="string">'area_total_km2'</span>]</span></pre></td></tr></table></figure>
-
-<p>The lattitude and longitude of the city and its corresponding area and population is the interested data, so they are selected from the file.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">plt.scatter(lon,lat,label=<span class="literal">None</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">            c=np.log10(population),cmap=<span class="string">'viridis'</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">            s=area,linewidth=<span class="number">0</span>,alpha=<span class="number">0.5</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.axis(aspect=<span class="string">'equal'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'longitude'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'latitude'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.colorbar(label=<span class="string">'log$_&#123;10&#125;$(population)'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.clim(<span class="number">3</span>,<span class="number">7</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> area <span class="keyword">in</span> [<span class="number">100</span>,<span class="number">300</span>,<span class="number">500</span>]:</span></pre></td></tr><tr><td class="code"><pre><span class="line">    plt.scatter([],[],c=<span class="string">'k'</span>,alpha=<span class="number">0.3</span>,s=area,</span></pre></td></tr><tr><td class="code"><pre><span class="line">                label=str(area) + <span class="string">'km$^2$'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.legend(scatterpoints=<span class="number">1</span>,frameon=<span class="literal">True</span>,</span></pre></td></tr><tr><td class="code"><pre><span class="line">           labelspacing=<span class="number">1</span>,title=<span class="string">'City Area'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'California Cities: Area and Population'</span>)</span></pre></td></tr></table></figure>
-
-<p>Scattered graph is used here. The x-axis stands for the longitude of the city and the y-axis stands for the lattitude of the city. Different colors are used to represent different number (density) of population. As the population is too large, the log scale is used to represent the large number. <code>s</code> is the size of the point on the scattered diagrame which represents the area of the city. <code>cmap</code> is the parameter used to set the type of colormap, such as ‘binary’ and ‘viridis’.</p>
-<p>Here, the scale used in the x-axis and y-axis is the same. What is more, areas of 100, 300, 500 are used to give an approximation of the relation between the size of the circle and the area. Note that in line 11, x value and y value are none, so the legend is set using labels instead of x,y values, so <code>plt.legend()</code> must be used to show the legend. Otherwize, the legend will not be shown. </p>
-<p><a href="https://imgchr.com/i/Jy1wdK" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy1wdK.png" alt="Jy1wdK.png"></a></p>
-<p>The graph shows the distribution of area and population from North-west to South-east in California.</p>
-<h2 id="2D-Histogram"><a href="#2D-Histogram" class="headerlink" title="2D Histogram"></a>2D Histogram</h2><figure class="highlight py"><table><tr><td class="code"><pre><span class="line">mean = [<span class="number">0</span>,<span class="number">0</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">cov = [[<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">2</span>]]</span></pre></td></tr><tr><td class="code"><pre><span class="line">x,y = np.random.multivariate_normal(mean,cov,<span class="number">10000</span>).T</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.hist2d(x,y,bins=<span class="number">30</span>,cmap=<span class="string">'Blues'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">cb = plt.colorbar()</span></pre></td></tr><tr><td class="code"><pre><span class="line">cb.set_label(<span class="string">'counts in bin'</span>)</span></pre></td></tr></table></figure>
-
-<p>The Mulrivariate Gaussian Distribution is used to generate the x-axis and y-axis of the graph. <code>bins</code> parameter is used to define the number of equal-width bins in the range. </p>
-<p><a href="https://imgchr.com/i/Jy3eYD" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy3eYD.md.png" alt="Jy3eYD.md.png"></a></p>
-<p>This diagrame has very important applications in my opinion. For example, in a shop, the enterprise can have an idea of the popularity of different goods by looking at the density of people in that area. This can be achieved by using an infrared detector which detects the heat emitted from human beings. The darker the color, the more people there are in that area. In doing so, the enterprise can adjust the supply of different products according to different demand to maximise their profit.</p>
-<p><a href="https://imgchr.com/i/Jy89N8" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/25/Jy89N8.png" alt="Jy89N8.png"></a></p>
-<p>&lt;Image from <a href="https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;" target="_blank" rel="noopener">https://thumbs.dreamstime.com/z/people-group-infected-influenza-virus-under-thermal-imaging-camera-aka-thermal-unit-modern-airport-passenger-crowd-healthcare-171922450.jpg&gt;</a></p>
-]]></content>
-      <categories>
-        <category>Data analysis</category>
-      </categories>
-      <tags>
-        <tag>Data analysis</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Neural Network-based Regression</title>
     <url>/2020/03/01/Neural-Network-based-Regression/</url>
     <content><![CDATA[<p>Recently, I have learnt the Neural Network-based Regression, which means that according to train set and test set of data, a prediction can be made according to the model based on neural network.</p>
@@ -902,54 +978,24 @@
       </tags>
   </entry>
   <entry>
-    <title>Multithreading</title>
-    <url>/2020/06/24/Multithreading/</url>
-    <content><![CDATA[<p>Yesterday, I have learnt an important concept in computer architecture called “Multithreading”. It is the ability of a CPU to provide multiple threads of execution concurrently, supported by the operating system.</p>
-<p><img src="https://s1.ax1x.com/2020/06/24/Nwl21f.png" alt="Nwl21f.png"></p>
-<p>&lt; Image from <a href="https://pitchenginelive.blob.core.windows.net/refinery/28f29690-4305-4640-95e9-c04dab195652/Gallery/4df83d29-aac3-4158-aed7-103e1aa26745.png" target="_blank" rel="noopener">Here</a>) &gt;</p>
-<h2 id="Example-code"><a href="#Example-code" class="headerlink" title="Example code"></a>Example code</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span><span class="params">()</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        nowtime = time.strftime(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">'%Y-%m-%d %H:%M:%S'</span>, time.localtime(time.time()))</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">"func1: "</span> + nowtime)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        time.sleep(<span class="number">1</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"func1 ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func2</span><span class="params">()</span>:</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        nowtime = time.strftime(</span></pre></td></tr><tr><td class="code"><pre><span class="line">            <span class="string">'%Y-%m-%d %H:%M:%S'</span>, time.localtime(time.time()))</span></pre></td></tr><tr><td class="code"><pre><span class="line">        print(<span class="string">"func2: "</span> + nowtime)</span></pre></td></tr><tr><td class="code"><pre><span class="line">        time.sleep(<span class="number">2</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"func2 ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:  </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1 = threading.Thread(target=func1)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1.setDaemon(<span class="literal">True</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t1.start()  </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2 = threading.Thread(target=func2)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2.setDaemon(<span class="literal">True</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    t2.start()</span></pre></td></tr><tr><td class="code"><pre><span class="line">    time.sleep(<span class="number">3</span>) </span></pre></td></tr><tr><td class="code"><pre><span class="line">    print(<span class="string">"main ends"</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'This is not a line of codes in the main'</span>)</span></pre></td></tr></table></figure>
+    <title>Loops</title>
+    <url>/2019/12/24/Loops/</url>
+    <content><![CDATA[<p>Last week, I have learned 2 different types of loops in Python, which are__ ‘for’ loop__ and <strong>‘while’ loop</strong>. I think the main difference between these 2 loops are that ‘for’ loops can deal with the situation where the number of loops is known, and ‘while’ loops are chosen if the number of loops is unknown.</p>
+<p>Later, I did some practise. For example, I wrote some codes to display the pattern like this.</p>
+<h2 id="Pattern"><a href="#Pattern" class="headerlink" title="Pattern"></a>Pattern</h2><p><img src="https://s2.ax1x.com/2020/01/30/11F3uQ.png" alt="11F3uQ.png"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">6</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">print</span> (i,<span class="number">1</span>,i,i**<span class="number">2</span>,i**<span class="number">3</span>)</span></pre></td></tr></table></figure>
 
-<p><img src="https://s1.ax1x.com/2020/06/24/NwMP9f.png" alt="NwMP9f.png"></p>
-<ul>
-<li><p>I learnt this concept from this example code above. <strong>func1()</strong> and <strong>func2()</strong> are all <strong>child thread</strong>, and the lines below “if <strong>name</strong> == ‘<strong>main</strong>‘:  “ are the <strong>main thread</strong>. </p>
-</li>
-<li><p><strong>func1()</strong> is used to print the current time with 1 second interval for 10 times, and <strong>func2()</strong> is used to print the current time with 2 second interval for 10 times. Therefore,  <strong>func1()</strong> is runed for 10 seconds, and <strong>func2()</strong> is runed for 20 seconds given that they are run fully.</p>
-</li>
-<li><p>if  __ name __ == ‘__ main __’ means if the codes is run directly, this will be executed. However, if this .py file is imported, it will not be executed.</p>
-<p>e.g. </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threading</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> threadTest</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">threadTest.func1()</span></pre></td></tr></table></figure>
+<p>After writing these codes, I realized that if you want to <strong>print in a line, just use comma to separate different items, or add (end =’’)</strong> .</p>
+<h2 id="Multiplication-Table"><a href="#Multiplication-Table" class="headerlink" title="Multiplication Table"></a>Multiplication Table</h2><p>In the following day, I wrote a program to show the multiplication table like this.<a href="https://imgchr.com/i/lP5QCq" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/24/lP5QCq.md.png" alt="lP5QCq.md.png"></a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range (<span class="number">1</span>,<span class="number">10</span>):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range (<span class="number">1</span>,(i+<span class="number">1</span>)):</span></pre></td></tr><tr><td class="code"><pre><span class="line">        <span class="keyword">print</span> (str(i) + <span class="string">'*'</span> + str(j) + <span class="string">'='</span>, i*j,end = <span class="string">' '</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">''</span>)</span></pre></td></tr></table></figure>
 
-<p><a href="https://imgchr.com/i/NwM4xS" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/24/NwM4xS.png" alt="NwM4xS.png"></a></p>
-</li>
-<li><p><strong>.setDaemon(true)</strong> means this child thread will end as the main thread ends, and the default for this method is True.</p>
-</li>
-<li><p><strong>t1.start()</strong> means it is the background that process the data instead of the program.</p>
-</li>
-</ul>
-<h2 id="Another-example-of-multithreading"><a href="#Another-example-of-multithreading" class="headerlink" title="Another example of multithreading"></a>Another example of multithreading</h2><p><img src="https://s1.ax1x.com/2020/06/24/NwQMdA.jpg" alt="NwQMdA.jpg"></p>
-<ul>
-<li><p>Assume t is the main thread, t1,t2 are the child thread.</p>
-</li>
-<li><p>Here, <strong>t1.setDeamon(False)</strong>, meaning that the main thread will end when t1 ends, so at the moment where t1 ends, t2 is not ending, but it is cut off.</p>
-</li>
-<li><p>E.g.</p>
-<p>t is the event that a person drives from A to B</p>
-<p>t1 is the event that the person get off the car</p>
-<p>t2 is the event that the music is on</p>
-<p>When the person gets off the car, the music is not necessarily stopped, but we need to switch off the music when person gets off the car.</p>
-<h2 id="Multithreading-in-the-program"><a href="#Multithreading-in-the-program" class="headerlink" title="Multithreading in the program"></a>Multithreading in the program</h2><p>The main thread is the graphic interface that allows me to click the button to take a photo</p>
-<p>Two chil threads are collecting data from the humidity sensor and taking photo from the plants</p>
-<p>When the graphic interface is closed, it makes nonsense to still turn on the camera and humidity sensor, so the <strong>setDaemon(True)</strong> is for both humidity sensor and camera</p>
-<p>In conclusion, the multithreading allows the CPU to do many threads(tasks) at the same time, which is more convenient and efficient.</p>
-<p>​      </p>
-</li>
-</ul>
+<p>This is an example of a nested loop. The inside part will be executed first, and then the outside part.  Adding (print(‘’)) in the last line is a very smart idea, because the end of each line will be occupied by a blank, so that the next figure begins in the next line.</p>
 ]]></content>
       <categories>
-        <category>Dialogue with Plants</category>
+        <category>Python</category>
       </categories>
       <tags>
-        <tag>Dialogue with Plants</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -1044,121 +1090,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Pandas 2</title>
-    <url>/2020/04/18/Pandas-2/</url>
-    <content><![CDATA[<p>Today, I learnt some functions and applications of the modules <code>Pandas</code> through the data about the number of bicycle passing through the Fremon Bridge in Seattle in the US.</p>
-<p><img src="https://s1.ax1x.com/2020/04/18/Jnw0Df.png" alt="Jnw0Df.png"></p>
-<p>&lt;Image from <a href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Fremont_Bridge.jpg&gt;" target="_blank" rel="noopener">https://upload.wikimedia.org/wikipedia/commons/4/4e/Fremont_Bridge.jpg&gt;</a></p>
-<p><img src="https://s1.ax1x.com/2020/04/18/JnwrVS.png" alt="JnwrVS.png"></p>
-<p>First of all, the data is pre-processed by simplifying the names and drop the NaN data.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">data.columns = [<span class="string">'West'</span>,<span class="string">'East'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">data[<span class="string">'Total'</span>] = data.eval(<span class="string">'West + East'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">data.dropna().describe()</span></pre></td></tr></table></figure>
-
-<p>Here, the <code>.eval()</code> method is just like <code>data[&#39;Total&#39;] = data[&#39;West&#39;] + data[&#39;East&#39;]</code> .</p>
-<p>To visualise the data: </p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span></pre></td></tr><tr><td class="code"><pre><span class="line">%matplotlib inline</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> seaborn;seaborn.set()</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">data.plot(alpha=<span class="number">0.5</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Hourly Bicycle Count'</span>)</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/Jn00zR.png" alt="Jn00zR.png"></p>
-<p>As shown in the graph, the data is too much and only some of the data is needed to be analysed, so the resampling is necessary.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">weekly = data.resample(<span class="string">'W'</span>).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">weekly.plot(style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Weekly bicycle count'</span>)</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/Jn05QI.png" alt="Jn05QI.png"></p>
-<figure class="highlight plain"><figcaption><span>here means that the data for the whole week is added, and the value of which is  represented by the last day of the week.</span></figcaption><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">Also, the rolling window can be used to resize the data.</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;py</span></pre></td></tr><tr><td class="code"><pre><span class="line">daily &#x3D; data.resample(&#39;D&#39;).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">daily.rolling(30,center&#x3D;True).mean().plot(style&#x3D;[&#39;:&#39;,&#39;--&#39;,&#39;-&#39;])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(&#39;mean of 30 days count&#39;)</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/JnBAfJ.png" alt="JnBAfJ.png"></p>
-<p>Here, the mean value of 30 days are chosen to be the size of a window which rolls across all the data, and the central value is used to be the label.</p>
-<p>In comparison, if 50 days are chosen to be the size of a window, the curve will look more smooth, which will be similar to the shape of a sinusoidal wave.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">daily.rolling(<span class="number">50</span>,center=<span class="literal">True</span>,win_type=<span class="string">'gaussian'</span>).sum(std=<span class="number">10</span>).plot(style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/JnBa0f" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/18/JnBa0f.png" alt="JnBa0f.png"></a></p>
-<p>If we want to see which time period has the greatest number of bicycles passing by, data for the same period of time can be grouped by.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">by_time = data.groupby(data.index.time).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">hourly_ticks = <span class="number">4</span>*<span class="number">60</span>*<span class="number">60</span>*np.arange(<span class="number">6</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.plot(xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/JnBLB6.png" alt="JnBLB6.png"></p>
-<figure class="highlight plain"><figcaption><span>has the output of ```[    0, 14400, 28800, 43200, 57600, 72000]```, and these values are given to the parameter of ```xticks``` in the ```matplotlib``` and is converted to time period automatically. As shown in the graph, the bimodal distribution indicates that at 8:00 and about 17:00, there are greatest number of bicycles passing through the Fremont Bridge, perhaps due to the morning peak and evening peak.</span></figcaption><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">What is more, instead of grouping by data by time period, the data can be also grouped by according to the day.</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;py</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday &#x3D; data.groupby(data.index.dayofweek).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday.index &#x3D; [&#39;Mon&#39;,&#39;Tue&#39;,&#39;Wed&#39;,&#39;Thurs&#39;,&#39;Fri&#39;,&#39;Sat&#39;,&#39;Sun&#39;]</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday.plot(style&#x3D;[&#39;:&#39;,&#39;--&#39;,&#39;-&#39;])</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/JnDcPe.png" alt="JnDcPe.png"></p>
-<p>The <code>data.index.dayofweek</code> gives values of 0-6, each of which is repeated for 24 times because there are 24 hours a day, and the data is collected each hour. Then, 0-6 are given names of Monday, Tuesday, Wednesday……</p>
-<p>Finally, the number of bicycles in weekday and weekend can be shown.</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">weekend = np.where(data.index.weekday &lt; <span class="number">5</span>, <span class="string">'Weekday'</span>,<span class="string">'Weekend'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time = data.groupby([weekend,data.index.time]).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">fig,ax = plt.subplots(<span class="number">1</span>,<span class="number">2</span>,figsize=(<span class="number">14</span>,<span class="number">5</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.ix[<span class="string">'Weekday'</span>].plot(ax=ax[<span class="number">0</span>],title=<span class="string">'Weekdays'</span>,xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.ix[<span class="string">'Weekend'</span>].plot(ax=ax[<span class="number">1</span>],title=<span class="string">'Weekends'</span>,xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/04/18/Jnr7ex.png" alt="Jnr7ex.png"></p>
-<p><code>np.where(a(bool),b,c)</code> means that if a is True, b is returned, while a is False, c is returned. Therefore, for the first 5 days(0,1,2,3,4), <code>data.index.weekday &lt; 5</code> is True, it is weekday, and for the remaining 2 days, <code>data.index.weekday &lt; 5</code> is False, it is weekend.</p>
-]]></content>
-      <categories>
-        <category>Data analysis</category>
-      </categories>
-      <tags>
-        <tag>Data analysis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Feelings and Reflections on the Garbage Classification Programme</title>
-    <url>/2020/04/11/Feelings-and-Reflections-on-the-Garbage-Classification-Programme/</url>
-    <content><![CDATA[<p>Being a good student requires a variety of skills including time management, teamwork, keeping good focus and facing challenges, which I have learnt during my experience of taking part in the Garbage Classification Programme which aims to determine which class the rubbish belongs to through image identification and CNN algorithm. </p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7OGwt.png" alt="G7OGwt.png"></p>
-<p>&lt;Image from <a href="https://youth-time.eu/wp-content/uploads/2018/11/b7d41aa04e4da12ee42f355b9c8e1b10_XL.jpg&gt;" target="_blank" rel="noopener">https://youth-time.eu/wp-content/uploads/2018/11/b7d41aa04e4da12ee42f355b9c8e1b10_XL.jpg&gt;</a></p>
-<p>At the beginning, I had absolutely no idea what the Garbage Classification was and how can it benefit people all over the world. During the process of learning, I gradually found the importance of Garbage Classification which can benefit our economy, society and ecosystem.</p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7OWpF.png" alt="G7OWpF.png"></p>
-<p>&lt; Image from <a href="https://ichef.bbci.co.uk/news/1024/cpsprodpb/1BFF/production/_109676170_gettyimages-1166817364-2.jpg" target="_blank" rel="noopener">https://ichef.bbci.co.uk/news/1024/cpsprodpb/1BFF/production/_109676170_gettyimages-1166817364-2.jpg</a> &gt;</p>
-<p>First of all, with increasing amount of rubbish produced every day and deteriorating environment, people have increasing concern about how to deal with a significant amount of rubbish and the concept of garbage classification was presented. With classified rubbish, the soil erosion will be greatly reduced, because some of the rubbish, such as battery and plastic bags, are not biodegradable, meaning that they cannot or it takes very long time for them to be broken down by the soil. Staying in the soil, those rubbish will make the field useless and decrease the output for the agriculture goods, which will negatively affect the economy. </p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7vGwR.png" alt="G7vGwR.png"></p>
-<p>&lt;Image from <a href="https://res.cloudinary.com/fleetnation/image/private/c_fit,w_1120/g_south,l_text:style_gothic2:%C2%A9%20Ashley%20Cooper,o_20,y_10/g_center,l_watermark4,o_25,y_50/v1495745317/sfjlaup4gwdorkymjnqz.jpg&gt;" target="_blank" rel="noopener">https://res.cloudinary.com/fleetnation/image/private/c_fit,w_1120/g_south,l_text:style_gothic2:%C2%A9%20Ashley%20Cooper,o_20,y_10/g_center,l_watermark4,o_25,y_50/v1495745317/sfjlaup4gwdorkymjnqz.jpg&gt;</a></p>
-<p>In addition, some rubbish, such as rot food, will emit gases with bad smell and attracts many flies, which makes citizens very uncomfortable when passing through the region. This has worsened the environment significantly. What is more, some animals will accidently take in some the toxic plastic and die in a few months, which makes the ecosystem unbalanced.</p>
-<p>Therefore, the garbage classification is needed to improve the situation. Different classes of rubbish can be reused in different ways, so that the resources can be used more efficiently. For example, disposable chopsticks, which are widely used in China, can be reprocessed to produce paper which will be otherwise produced by cutting down thousands and millions of trees. Also, some rubbish, such as wooden stuff, can be used to burn to produce electricity and providing heat for city dwellers in winter. As a result, different classes of rubbish can be sent to different factories to reprocess them and then reuse them. Therefore, instead of just landfill unclassified rubbish, we can reuse 60%-70% of the rubbish according to their classes to change them from rubbish to resources, and in the battle between human beings and rubbish, the rubbish can be changed from enemies to friends.</p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7X33F.png" alt="G7X33F.png"></p>
-<p>&lt;Image from <a href="https://cdn.shopify.com/s/files/1/0773/5915/articles/Ryclying_pic_blog_2_1600x.jpg?v=1455084942&gt;" target="_blank" rel="noopener">https://cdn.shopify.com/s/files/1/0773/5915/articles/Ryclying_pic_blog_2_1600x.jpg?v=1455084942&gt;</a></p>
-<p>However, in China, a large proportion of people are only encouraged to do the garbage classification, but they do not know how. Many people cannot tell which class the rubbish belongs to, so although there are different rubbish bins, they cannot correctly throw the rubbish into the correct bin. Therefore, I decided to learn some AI techniques to give information to people about the classes of the rubbish and help them classify the rubbish more easily. Although some people might argue that it is impossible for the machine to improve the garbage classification, because different classes of rubbish was put together into the rubbish bag by each households and it is very hard for the machine to identify the rubbish in the bag and then classify them, I holds a different view. In some occasions, such as in the airport, people often throw only one or two rubbish into the rubbish bin instead of a bag of them. The AI machine can be used in these situations, telling people the class in which the rubbish should be thrown, so that people get more knowledge about the classes, and when they repeat this in many situations for many times, they will get used to this way of thinking. Therefore, they can correctly classify the rubbish at home.</p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7jPbR.png" alt="G7jPbR.png"></p>
-<p>&lt;Image from <a href="https://i.ytimg.com/vi/7C6I_wuvvhY/maxresdefault.jpg&gt;" target="_blank" rel="noopener">https://i.ytimg.com/vi/7C6I_wuvvhY/maxresdefault.jpg&gt;</a></p>
-<p>In reality, in Shanghai, China, it is compulsory for local citizens to do garbage classification, and some people, especially the old people, have little idea of the classes, and this has caused some trouble for their normal daily life. Citizens need to spend a lot of time searching for the type of the rubbish, which is very inefficient and boring. This may lead to some complains among the society, and give disincentives for citizens to do the meaningful things. Therefore, I wonder whether this complex thing can be done easily and interestingly, so I came up with the idea of connecting the garbage classification with modern technology instead of just a rule. The CNN algorithm of machine learning can train a model for a machine which can be used to identify the rubbish quickly and accurately. For instance, citizens only needs to show the rubbish in front of the camera, and then the class will be shown on the displayed screen, so that it will arouse the curiosity of children, adults, mid-aged people and aged-people, so that people can do the meaningful things happily. Due to the fact that it is not necessary for each one to know exact class of the rubbish, the garbage classification campaign can be done more effectively and burden of memory on residents can be reduced.</p>
-<p><img src="https://s1.ax1x.com/2020/04/11/G7jqQe.png" alt="G7jqQe.png"></p>
-<p>&lt;Image from <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9dWakreHNMCnKp2e05FKeJJhqJ4IiGyz_eJr0YDQPSG8LLZyT&amp;s&gt;" target="_blank" rel="noopener">https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9dWakreHNMCnKp2e05FKeJJhqJ4IiGyz_eJr0YDQPSG8LLZyT&amp;s&gt;</a></p>
-<p>In conclusion, after doing the programme, I have spent some valuable time thinking about the future prospects of the garbage classification that can be applied to our real life, and currently I am still training the model and improve the algorithms. Hopefully, one day in the future, the AI techniques of machine learning and image identification can be used widely in the world, and this is my final intention of doing this programme.</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Machine Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>My participation in 2019-nCoV Prevention &amp; Treatment Project</title>
-    <url>/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/</url>
-    <content><![CDATA[<h3 id="Yesterday-on-the-30th-of-January-the-World-Health-Organization-has-declared-that-the-coronavirus-in-China-a-global-health-emergency"><a href="#Yesterday-on-the-30th-of-January-the-World-Health-Organization-has-declared-that-the-coronavirus-in-China-a-global-health-emergency" class="headerlink" title="Yesterday, on the 30th of January, the World Health Organization has declared that the coronavirus in China a global health emergency."></a>Yesterday, on the 30th of January, the World Health Organization has declared that the coronavirus in China a global health emergency.</h3><p>I was shocked when hearing this news early in the morning. Initially, I thought it was only a regional outbreak in Wuhan, the city at the centre of the outbreak, but then the virus has spread to almost everywhere in China, and now around the world. Until 30th of January, the number of deaths has increased to 170, and there were 7711 confirmed cases and 1370 suspected cases.  </p>
-<p><img src="https://s2.ax1x.com/2020/01/31/13xu5T.jpg" alt="13xu5T.jpg"></p>
-<p>First of all, I felt so depressed about this news, and wanted to thank for all the doctors and nurses fighting for the coronavirus, and felt so sorry for those who have suffered from this virus during the Chinese New Year. Then, I decided to do something for patients and medical staffs from all over the world, especially Wuhan, China.<br>As a citizen, I have been told by the news that the full protecting clothes for medical staffs and facial masks everyone were in short supply but in high demand. In addition, I realised that some materials must be in shortage, because this size of this 2019-nCoV was unprecedented. Therefore, I wanted to use my faint action to help patients who needs the warmth from everyone. As the saying goes, ‘Actions speak louder than words’, I decided to donate my own money from the ‘red packets’ to help people suffering from this disease, especially in Wuhan.<br>Fortunately, I found the ‘Novel Coronavirus Prevention &amp; Treatment Projects’ and donated 500 RMB to the Project Hope, a charity organisation. Although, the money itself has no intrinsic value, the compassion and kindness behind this activity is invaluable, which cannot be measured using money.<br><strong>Furthermore, I wanted to say thank you to foreign people who hold great concern about the fighting for virus in China. It was your greeting and encouragement that gave us confidence and strength. The virus does not need a passport, and we are the community of shared future for mankind. Virus can be isolated, but the compassion and kindness cannot. The compassion and kindness are like a bridge, connecting people from all over the world.</strong></p>
-<p><strong>Finally,  I hope that with appropriate prevention and confidence, which can be seen as the best vaccine, we can definitely win the smokeless battle!</strong></p>
-]]></content>
-      <categories>
-        <category>Activities &amp; Feelings</category>
-      </categories>
-      <tags>
-        <tag>COVID-19</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2019/12/12/hello-world/</url>
-    <content><![CDATA[<p>Hello, everyone! This is my first blog. </p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>Testing</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Pandas</title>
     <url>/2020/04/09/Pandas/</url>
     <content><![CDATA[<p>Recently, I have learnt some interesting functions and methods about the module <code>Pandas</code>, which are often used to process tables. </p>
@@ -1211,6 +1142,94 @@
       </tags>
   </entry>
   <entry>
+    <title>Pandas 2</title>
+    <url>/2020/04/18/Pandas-2/</url>
+    <content><![CDATA[<p>Today, I learnt some functions and applications of the modules <code>Pandas</code> through the data about the number of bicycle passing through the Fremon Bridge in Seattle in the US.</p>
+<p><img src="https://s1.ax1x.com/2020/04/18/Jnw0Df.png" alt="Jnw0Df.png"></p>
+<p>&lt;Image from <a href="https://upload.wikimedia.org/wikipedia/commons/4/4e/Fremont_Bridge.jpg&gt;" target="_blank" rel="noopener">https://upload.wikimedia.org/wikipedia/commons/4/4e/Fremont_Bridge.jpg&gt;</a></p>
+<p><img src="https://s1.ax1x.com/2020/04/18/JnwrVS.png" alt="JnwrVS.png"></p>
+<p>First of all, the data is pre-processed by simplifying the names and drop the NaN data.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">data.columns = [<span class="string">'West'</span>,<span class="string">'East'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">data[<span class="string">'Total'</span>] = data.eval(<span class="string">'West + East'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">data.dropna().describe()</span></pre></td></tr></table></figure>
+
+<p>Here, the <code>.eval()</code> method is just like <code>data[&#39;Total&#39;] = data[&#39;West&#39;] + data[&#39;East&#39;]</code> .</p>
+<p>To visualise the data: </p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span></pre></td></tr><tr><td class="code"><pre><span class="line">%matplotlib inline</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> seaborn;seaborn.set()</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">data.plot(alpha=<span class="number">0.5</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Hourly Bicycle Count'</span>)</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/Jn00zR.png" alt="Jn00zR.png"></p>
+<p>As shown in the graph, the data is too much and only some of the data is needed to be analysed, so the resampling is necessary.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">weekly = data.resample(<span class="string">'W'</span>).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">weekly.plot(style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Weekly bicycle count'</span>)</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/Jn05QI.png" alt="Jn05QI.png"></p>
+<figure class="highlight plain"><figcaption><span>here means that the data for the whole week is added, and the value of which is  represented by the last day of the week.</span></figcaption><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">Also, the rolling window can be used to resize the data.</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;py</span></pre></td></tr><tr><td class="code"><pre><span class="line">daily &#x3D; data.resample(&#39;D&#39;).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">daily.rolling(30,center&#x3D;True).mean().plot(style&#x3D;[&#39;:&#39;,&#39;--&#39;,&#39;-&#39;])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(&#39;mean of 30 days count&#39;)</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/JnBAfJ.png" alt="JnBAfJ.png"></p>
+<p>Here, the mean value of 30 days are chosen to be the size of a window which rolls across all the data, and the central value is used to be the label.</p>
+<p>In comparison, if 50 days are chosen to be the size of a window, the curve will look more smooth, which will be similar to the shape of a sinusoidal wave.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">daily.rolling(<span class="number">50</span>,center=<span class="literal">True</span>,win_type=<span class="string">'gaussian'</span>).sum(std=<span class="number">10</span>).plot(style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/JnBa0f" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/04/18/JnBa0f.png" alt="JnBa0f.png"></a></p>
+<p>If we want to see which time period has the greatest number of bicycles passing by, data for the same period of time can be grouped by.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">by_time = data.groupby(data.index.time).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">hourly_ticks = <span class="number">4</span>*<span class="number">60</span>*<span class="number">60</span>*np.arange(<span class="number">6</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.plot(xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/JnBLB6.png" alt="JnBLB6.png"></p>
+<figure class="highlight plain"><figcaption><span>has the output of ```[    0, 14400, 28800, 43200, 57600, 72000]```, and these values are given to the parameter of ```xticks``` in the ```matplotlib``` and is converted to time period automatically. As shown in the graph, the bimodal distribution indicates that at 8:00 and about 17:00, there are greatest number of bicycles passing through the Fremont Bridge, perhaps due to the morning peak and evening peak.</span></figcaption><table><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">What is more, instead of grouping by data by time period, the data can be also grouped by according to the day.</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;py</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday &#x3D; data.groupby(data.index.dayofweek).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday.index &#x3D; [&#39;Mon&#39;,&#39;Tue&#39;,&#39;Wed&#39;,&#39;Thurs&#39;,&#39;Fri&#39;,&#39;Sat&#39;,&#39;Sun&#39;]</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_weekday.plot(style&#x3D;[&#39;:&#39;,&#39;--&#39;,&#39;-&#39;])</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/JnDcPe.png" alt="JnDcPe.png"></p>
+<p>The <code>data.index.dayofweek</code> gives values of 0-6, each of which is repeated for 24 times because there are 24 hours a day, and the data is collected each hour. Then, 0-6 are given names of Monday, Tuesday, Wednesday……</p>
+<p>Finally, the number of bicycles in weekday and weekend can be shown.</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">weekend = np.where(data.index.weekday &lt; <span class="number">5</span>, <span class="string">'Weekday'</span>,<span class="string">'Weekend'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time = data.groupby([weekend,data.index.time]).mean()</span></pre></td></tr><tr><td class="code"><pre><span class="line">fig,ax = plt.subplots(<span class="number">1</span>,<span class="number">2</span>,figsize=(<span class="number">14</span>,<span class="number">5</span>))</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.ix[<span class="string">'Weekday'</span>].plot(ax=ax[<span class="number">0</span>],title=<span class="string">'Weekdays'</span>,xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">by_time.ix[<span class="string">'Weekend'</span>].plot(ax=ax[<span class="number">1</span>],title=<span class="string">'Weekends'</span>,xticks=hourly_ticks,style=[<span class="string">':'</span>,<span class="string">'--'</span>,<span class="string">'-'</span>])</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/04/18/Jnr7ex.png" alt="Jnr7ex.png"></p>
+<p><code>np.where(a(bool),b,c)</code> means that if a is True, b is returned, while a is False, c is returned. Therefore, for the first 5 days(0,1,2,3,4), <code>data.index.weekday &lt; 5</code> is True, it is weekday, and for the remaining 2 days, <code>data.index.weekday &lt; 5</code> is False, it is weekend.</p>
+]]></content>
+      <categories>
+        <category>Data analysis</category>
+      </categories>
+      <tags>
+        <tag>Data analysis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Strings</title>
+    <url>/2020/02/11/Strings/</url>
+    <content><![CDATA[<p>Yesterday, I have learnt more methods about how to deal with strings.</p>
+<h2 id="Create-a-password"><a href="#Create-a-password" class="headerlink" title="Create a password"></a>Create a password</h2><p>First of all, I wrote a code to help the users to create a password which satisfies the requirements:</p>
+<ol>
+<li><p>The length of the password MUST be greater than 8</p>
+</li>
+<li><p>The password MUST be a combination of letters &amp; numbers. Either there are only letters or there are only numbers will NOT be allowed.</p>
+</li>
+<li><p>There must be a Capital letter involved.<br>The codes are posted below:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">       print(<span class="string">'Please enter your password'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">       password = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> len(password) &lt; <span class="number">8</span>: </span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'The length is less than 8,please try again'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">continue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.isalpha() <span class="keyword">or</span> password.isdecimal():</span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'The password should contain number &amp; letter'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">continue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.isalnum():                                     <span class="comment"># number &amp; letter</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">pass</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.lower() != password:                           <span class="comment"># Capital letter</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">break</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'At least one capital letter should be involved'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">   print(<span class="string">'Successful log in'</span>)</span></pre></td></tr></table></figure>
+
+<p>The flow chart is shown below.</p>
+<p><a href="https://imgchr.com/i/1qM1f0" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/02/13/1qM1f0.png" alt="1qM1f0.png"></a></p>
+<p>At the beginning, the ‘while’ loop is used, because the number of times the users will try to create the password is unknown. Then, the ‘isalpha()’ , ‘isdecimal()’ and ‘isalnum()’ methods are used.</p>
+<p><strong>isalpha()</strong>: return True if the string only contains letters</p>
+<p><strong>isdecimal()</strong>: return True if the string only contains numbers</p>
+<p><strong>isalnum()</strong>: return True if the string only contains numbers &amp; letters                     </p>
+</li>
+</ol>
+<p>What is more, to decide whether a Capital letter is involved in the password, the lower() method is used. This helps to change all the letters in the string into the lowercase. If there is a Capital letter involved, the changed string will be different from the original string, while if there is no Capital letters involved, the alterred string will be exactly the same as before.  Note that the numbers will NOT change if the lower() method is used.</p>
+<h2 id="Replacing-word"><a href="#Replacing-word" class="headerlink" title="Replacing word"></a>Replacing word</h2><p>This programme helps users to find the content and replace it with another.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the content'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">content = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">lst = content.split()</span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the word that you want it to be replaced'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">word = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the word that you want to replace it with'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">replacingWord = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(lst)):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> lst[i].lower() == word:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        lst[i] = replacingWord</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">' '</span>.join(lst)</span></pre></td></tr></table></figure>
+
+<ol>
+<li>Split the string into each word</li>
+<li>Find the word and replace it</li>
+<li>Join the list into compelete sentences</li>
+</ol>
+<p>The main idea is listed above, and there is an example below, which aims to replace the pronoun ‘which’ with ‘that’.</p>
+<p><img src="https://s2.ax1x.com/2020/02/13/1qN3VK.png" alt="1qN3VK.png"></p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Read &amp; Write documents</title>
     <url>/2020/02/18/Read-Write-documents/</url>
     <content><![CDATA[<p>Recently, I have learnt how to read and write documents in Python using absolute path (绝对路径) and relative path (相对路径). </p>
@@ -1239,6 +1258,116 @@
       <tags>
         <tag>Python</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>The feelings after attending the BPho</title>
+    <url>/2019/12/10/The-feelings-after-attending-the-BPho/</url>
+    <content><![CDATA[<p>On November 15th, I attended the BPho Physics competition. Although the content of the test was a little bit hard, I learned so much from the exam itself and the process of preparing for it. </p>
+<p>At the beginning, facing so many difficult questions, I didn’t know what to do. As I was an AS level student, some of the questions are the ones that I hadn’t met before. As a result, after solving some questions, I decided to separate all the questions from 2008 to 2018 into 5 categories in Section 1 and 8 categories in Section 2.</p>
+<p><a href="https://imgse.com/i/QDLzM8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLzM8.png" alt="QDLzM8.png"></a><br><a href="https://imgse.com/i/QDLjRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLjRP.png" alt="QDLjRP.png"></a></p>
+<p>Also, I made some comments, which is about some of my thinking process, on the side of the question.<img src="https://s2.ax1x.com/2019/12/10/QDOwod.png" alt="QDOwod.png"></p>
+<p>After taking part in this exam, I have learned 3 good habits: </p>
+<ul>
+<li><p><strong>Being persistent</strong>.  During the learning, not everything can be achieved without any obstacles. Although, once I wanted to give up, I kept telling myself ‘try again, try again’. Luckily, I did it, and regardless of the outcome, this spirit inspired me a lot.</p>
+</li>
+<li><p><strong>Being confident</strong>. At the beginning, I was not confident at all, because I can solve few problems. As time went by, I began to make some progress, so I became more confident. Latter,  I found that the more confident you are, the better the outcome will be, vice versa.</p>
+</li>
+<li><p><strong>Being ambitious</strong>. Before doing a task, a target should be built up, which guided me when I was hesitated. Setting up a higher goal gives me many incentives to learn.</p>
+<p>What is more, after doing a lot of questions, I found that Physics was quite interesting. Many things in our daily lives can be explained by Physics. For example, one day, on my way to school, a car passed by with its trumpet on. The pitch of which changed as the car moving. A week later, I knew this is called the Doppler Effect.</p>
+</li>
+</ul>
+<p><img src="https://s2.ax1x.com/2019/12/10/QDvSsK.png" alt="QDvSsK.png"></p>
+<p><img src="https://s2.ax1x.com/2019/12/10/QDvwo4.png" alt="QDvwo4.png"></p>
+<p>Physics is very interesting!</p>
+]]></content>
+      <categories>
+        <category>BPho</category>
+      </categories>
+      <tags>
+        <tag>BPho</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Visualising COVID-19 cases</title>
+    <url>/2020/05/09/Visualising-COVID-19-cases/</url>
+    <content><![CDATA[<p>Today, I have done some analysis on cases of COVID-19.</p>
+<p><img src="https://s1.ax1x.com/2020/05/10/Y1lwp8.png" alt="Y1lwp8.png"></p>
+<h2 id="Total-number-of-Confirmed-amp-Deaths"><a href="#Total-number-of-Confirmed-amp-Deaths" class="headerlink" title="Total number of Confirmed &amp; Deaths"></a>Total number of Confirmed &amp; Deaths</h2><p>The data was downloaded from ‘kaggle’ dataset.(<a href="https://www.kaggle.com/imdevskp/corona-virus-report" target="_blank" rel="noopener">https://www.kaggle.com/imdevskp/corona-virus-report</a>)</p>
+<p>It looks like this:</p>
+<p><a href="https://imgchr.com/i/Y1nj58" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1nj58.png" alt="Y1nj58.png"></a></p>
+<p>Among thousands of data, I was interested in cases in China, so I select the data from China.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">China = df[df[<span class="string">'Country/Region'</span>]==<span class="string">'China'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">China</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1udsA" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1udsA.png" alt="Y1udsA.png"></a></p>
+<p>There is still too much data, but they are all Chinese cases, so I decide to merge the data from the same province using ‘groupby()’ method, and then to find the total number of confirmed, deaths and recovered using ‘sum()’ method.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">provinces = China.groupby(<span class="string">'Province/State'</span>).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">provinces</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1uOy9" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1uOy9.png" alt="Y1uOy9.png"></a></p>
+<p>Then, I try to plot a bar chart to see the relative number.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(province_index[<span class="string">'Province/State'</span>],province_index[<span class="string">'Confirmed'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1Kgk6" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1Kgk6.md.png" alt="Y1Kgk6.md.png"></a></p>
+<p>As shown in the graph, confirmed cases in Hubei Province is significantly greater than that in other areas, because Wuhan, the capital city of Hubei, is the center of the outbreak of this pandemic. However, confirmed cases in other areas cannot be clearly seen and compared, so I decided to plot another graph excluding Hubei province.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">drop_Hubei = province_index.drop(index=<span class="number">13</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">drop_Hubei</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/05/09/Y1Kj1g.png" alt="Y1Kj1g.png"></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(drop_Hubei[<span class="string">'Province/State'</span>],drop_Hubei[<span class="string">'Confirmed'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'Provinces'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Confirmed cases'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'Confirmed cases in China till May 8th'</span>)</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1MFhT" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1MFhT.png" alt="Y1MFhT.png"></a></p>
+<p>As shown in this graph, Guangdong province has the second largest number of confirmed cases, maybe due to the fact that it is a international city that has a great number of flow of people around the world every day, which increses the spread of the disease. </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(drop_Hubei[<span class="string">'Province/State'</span>],drop_Hubei[<span class="string">'Deaths'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'Provinces'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Confirmed cases'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'Deaths in China till May 8th'</span>)</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1M83D" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1M83D.png" alt="Y1M83D.png"></a></p>
+<p>Furthermore, I also drew the number of  Deaths untill May 8th. As shown in the graph, although Guangdong has the second largest number of confirmed cases, the deaths in Guangdong province is not the second greatest. Instead, Henan has the highest number of deaths apart from Hubei, maybe because medical facilities are not enough in Henan, and doctors are not qualified as in Guangdong, meaning that the ability for Henan to deal with this COVID-19 is weaker.</p>
+<h2 id="Trend-from-Jan-22nd-to-May-8th"><a href="#Trend-from-Jan-22nd-to-May-8th" class="headerlink" title="Trend from Jan 22nd to May 8th"></a>Trend from Jan 22nd to May 8th</h2><p>I am a person born in Jiangsu province, so I am particularly interested in data in Jiangsu, and I chose cities around Jiangsu to analyse the trend.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = China.pivot(index=<span class="string">'Date'</span>, columns=<span class="string">'Province/State'</span>, values=<span class="string">'Confirmed'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">df1 = df[[<span class="string">'Jiangsu'</span>,<span class="string">'Beijing'</span>,<span class="string">'Shanghai'</span>,<span class="string">'Guangdong'</span>,<span class="string">'Zhejiang'</span>]]</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">covid_confirmed = df1</span></pre></td></tr><tr><td class="code"><pre><span class="line">covid_confirmed</span></pre></td></tr></table></figure>
+
+<p><a href="https://imgchr.com/i/Y1Q6JK" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/10/Y1Q6JK.png" alt="Y1Q6JK.png"></a></p>
+<p>Here, the pivot table is used to arrange the data.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot = covid_confirmed.plot(figsize=(<span class="number">14</span>,<span class="number">10</span>),linewidth=<span class="number">5</span>, legend=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.grid(color=<span class="string">'#d4d4d4'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.set_xlabel(<span class="string">'Date'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.set_ylabel(<span class="string">'Confirmed'</span>)</span></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2020/05/10/Y1QRQe.png" alt="Y1QRQe.png"></p>
+<p>As shown in the graph, the overal trend for 4 cities is the same, which is increasing rapidly at first, and tends to reach a plateau. Also, Jiangsu is the city that reaches a plateau at first among 4 cities, which means the Jiangsu government has done a great job reducing the spread out of this disease. </p>
+<p>The confirmed cases in many places in China tends to be constant, which means that as temperature increasing, the virus seems to be less and less active. Hopefully, the coronavirus will dissapear as soon as possible.</p>
+]]></content>
+      <categories>
+        <category>Data analysis</category>
+      </categories>
+      <tags>
+        <tag>COVID-19</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The biggest failure I experienced</title>
+    <url>/2020/06/07/The-biggest-failure-I-experienced/</url>
+    <content><![CDATA[<p>Being a successful student requires a variety of skills including time management and keeping good focus; I learnt this important fact during my experience of failing the ZhongKao exam which at the time, had a very negative impact on me. Ultimately though, it taught me a lot, and offered me insight into what failure can motivate us to achieve although it can be a very difficult learning curve. </p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t26LvT.png" alt="t26LvT.png"></p>
+<p>&lt;Image from <a href="https://library.law.yale.edu/sites/default/files/exams.jpg" target="_blank" rel="noopener">Here</a>&gt;</p>
+<p>During the 3 years of studying at Middle High school, I did not study very hard and I clearly remember that in the 2nd year, almost each afternoon, I could be found playing badminton after school.</p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t2cxQf.png" alt="t2cxQf.png"></p>
+<p>&lt;Image from <a href="https://www.badmintonengland.co.uk/media/2648/20161124_1706_hongkongopen2016_bprs4079.jpg?anchor=center&mode=crop&width=848&height=427&rnd=131710527970000000" target="_blank" rel="noopener">Here</a> )</p>
+<p>After two academic years, I realized that my mock exam score had declined rapidly due to my focus on other activities, so in the 3rd year, which is the last year of Junior High, I decided to study harder, but it was too late to return to my previous high standards. Eventually, when I received my score for the very important test, I was shocked because due to my poor score, I couldn’t apply to any mainstream schools which was my dream. At that moment, I felt tearful and distraught but on reflection I realised I had to analyse why my performance was so poor and discover my underlying problem.</p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t2cIsO.png" alt="t2cIsO.png"></p>
+<p>&lt;Image from <a href="https://www.theassignmenthelper.com/wp-content/uploads/2019/01/images8.jpg" target="_blank" rel="noopener">Here</a>)</p>
+<p>The subsequent soul-searching and quest to take something positive from my experience of failure led me to some important revelations. <strong>First of all, think twice before doing anything</strong>; If I had thought about the result of playing badminton instead of studying every day, I would have studied much harder. By studying harder for these 3 years, many years later I could then enjoy playing. In addition, due to this poor application to my studies and low motivation, I could have regretted it for many years in the future Therefore, nowadays, before doing anything, I always ask myself three questions: Would you regret it if you do not do it? Is it the best decision to make at the moment given my current circumstances? What are the advantages and disadvantages of not doing it?’. These questions now allow me try to make more rational decisions. </p>
+<p><a href="https://imgchr.com/i/t2hEsP" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/07/t2hEsP.png" alt="t2hEsP.png"></a></p>
+<p>&lt;Image from <a href="https://lh5.googleusercontent.com/proxy/Zan2SapfsehWzYWgrrrr4OhP8D_ymnJ_VujGfQ7apC6e5tlZ3tJRjl0gtUOaTtjP7AIMnDD9hVZTVkuxW1BILBTA3WOogYQQIf2-smX7yqOLbf9V1w" target="_blank" rel="noopener">Here</a> )</p>
+<p><strong>Secondly, I have learnt the importance of a character trait called persistence.</strong> I have come to realise that every success can rarely exist without persistence, although it can be argued that it is often easier to give up when life becomes challenging and look for a way out. Through my experience of failing and losing motivation, it is clear that temptations such as electronic devices and phone calls cause someone to get distracted and become unfocused, and if this happens, I will think about the difference between who I am currently and who I want to be in the future. Suddenly, I will refocus on the meaningful things, which include long-term goals and my own set of values which include patience and perseverance.</p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t2hgoD.png" alt="t2hgoD.png"></p>
+<p>&lt;Image from <a href="https://bandworld.org/magazine/wp-content/uploads/2018/10/the-iceberg-of-success.jpg" target="_blank" rel="noopener">Here</a>)</p>
+<p>This new approach and mindset have resulted in excellent results in Senior High School. For example, after working hard for years, I have become the top student in the monthly test and the end of semester tests, and now I continue to work hard to maintain my focus and determination, hoping to apply to a good university.</p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t2g66f.png" alt="t2g66f.png"></p>
+<p>&lt;Image from <a href="https://krishthehrguide.files.wordpress.com/2018/05/dream-2.jpg" target="_blank" rel="noopener">Here</a> )</p>
+<p><strong>My final piece of advice is just do it instead of thinking too much.</strong> In the past, I sometimes had a plan, but possible imagined difficulties would cause me to give up easily. Now, instead, I just do it, and adjust the plan during the process, which I found is the most efficient way to take me to a successful outcome although it is true decisions have to be made on a case by case basis. For instance, several months ago, I hesitated as to whether I should learn the Python language, because it seemed very complicated and a step too far for me but I decided to try it. Indeed, initially, I could not understand any lines, but I did not give up as I may have done before. Spending more time and energy on it, I have finally learnt some useful skills, and during the process learnt, I began to study the subject area in more depth and I have been deeply involved in a waste disposal programme which I am finding very interesting.</p>
+<p><img src="https://s1.ax1x.com/2020/06/07/t24Vp9.png" alt="t24Vp9.png"></p>
+<p>&lt;Image from <a href="https://www.imsurfsentinel.com/wp-content/uploads/2017/11/just-do-it.jpg" target="_blank" rel="noopener">Here</a>)</p>
+<p>In conclusion, after experiencing the biggest failure of my life, I have spent some valuable time finding the reasons for it and applied the solutions to my current studies and life. These realisations and insights discussed above have improved not only my studies but also my life skills, offering me a much more positive and balanced outlook on how failure can be understood as a learning experience for self- improvement and be the springboard for success rather than a reason for self-pity and discouragement.</p>
+<p><a href="https://imgchr.com/i/t24Y6I" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/07/t24Y6I.png" alt="t24Y6I.png"></a></p>
+<p>&lt;Image from <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzLeU-KWVtkcZLBRNnG-xI1sn4oKm6Mf7zM0hS0oaOREDxWdJT&s" target="_blank" rel="noopener">Here</a>)</p>
+]]></content>
+      <categories>
+        <category>Activities &amp; Feelings</category>
+      </categories>
   </entry>
   <entry>
     <title>PyQt5 and Opencv</title>
@@ -1339,153 +1468,24 @@
       </tags>
   </entry>
   <entry>
-    <title>The biggest failure I experienced</title>
-    <url>/2020/06/07/The-biggest-failure-I-experienced/</url>
-    <content><![CDATA[<p>Being a successful student requires a variety of skills including time management and keeping good focus; I learnt this important fact during my experience of failing the ZhongKao exam which at the time, had a very negative impact on me. Ultimately though, it taught me a lot, and offered me insight into what failure can motivate us to achieve although it can be a very difficult learning curve. </p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t26LvT.png" alt="t26LvT.png"></p>
-<p>&lt;Image from <a href="https://library.law.yale.edu/sites/default/files/exams.jpg" target="_blank" rel="noopener">Here</a>&gt;</p>
-<p>During the 3 years of studying at Middle High school, I did not study very hard and I clearly remember that in the 2nd year, almost each afternoon, I could be found playing badminton after school.</p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t2cxQf.png" alt="t2cxQf.png"></p>
-<p>&lt;Image from <a href="https://www.badmintonengland.co.uk/media/2648/20161124_1706_hongkongopen2016_bprs4079.jpg?anchor=center&mode=crop&width=848&height=427&rnd=131710527970000000" target="_blank" rel="noopener">Here</a> )</p>
-<p>After two academic years, I realized that my mock exam score had declined rapidly due to my focus on other activities, so in the 3rd year, which is the last year of Junior High, I decided to study harder, but it was too late to return to my previous high standards. Eventually, when I received my score for the very important test, I was shocked because due to my poor score, I couldn’t apply to any mainstream schools which was my dream. At that moment, I felt tearful and distraught but on reflection I realised I had to analyse why my performance was so poor and discover my underlying problem.</p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t2cIsO.png" alt="t2cIsO.png"></p>
-<p>&lt;Image from <a href="https://www.theassignmenthelper.com/wp-content/uploads/2019/01/images8.jpg" target="_blank" rel="noopener">Here</a>)</p>
-<p>The subsequent soul-searching and quest to take something positive from my experience of failure led me to some important revelations. <strong>First of all, think twice before doing anything</strong>; If I had thought about the result of playing badminton instead of studying every day, I would have studied much harder. By studying harder for these 3 years, many years later I could then enjoy playing. In addition, due to this poor application to my studies and low motivation, I could have regretted it for many years in the future Therefore, nowadays, before doing anything, I always ask myself three questions: Would you regret it if you do not do it? Is it the best decision to make at the moment given my current circumstances? What are the advantages and disadvantages of not doing it?’. These questions now allow me try to make more rational decisions. </p>
-<p><a href="https://imgchr.com/i/t2hEsP" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/07/t2hEsP.png" alt="t2hEsP.png"></a></p>
-<p>&lt;Image from <a href="https://lh5.googleusercontent.com/proxy/Zan2SapfsehWzYWgrrrr4OhP8D_ymnJ_VujGfQ7apC6e5tlZ3tJRjl0gtUOaTtjP7AIMnDD9hVZTVkuxW1BILBTA3WOogYQQIf2-smX7yqOLbf9V1w" target="_blank" rel="noopener">Here</a> )</p>
-<p><strong>Secondly, I have learnt the importance of a character trait called persistence.</strong> I have come to realise that every success can rarely exist without persistence, although it can be argued that it is often easier to give up when life becomes challenging and look for a way out. Through my experience of failing and losing motivation, it is clear that temptations such as electronic devices and phone calls cause someone to get distracted and become unfocused, and if this happens, I will think about the difference between who I am currently and who I want to be in the future. Suddenly, I will refocus on the meaningful things, which include long-term goals and my own set of values which include patience and perseverance.</p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t2hgoD.png" alt="t2hgoD.png"></p>
-<p>&lt;Image from <a href="https://bandworld.org/magazine/wp-content/uploads/2018/10/the-iceberg-of-success.jpg" target="_blank" rel="noopener">Here</a>)</p>
-<p>This new approach and mindset have resulted in excellent results in Senior High School. For example, after working hard for years, I have become the top student in the monthly test and the end of semester tests, and now I continue to work hard to maintain my focus and determination, hoping to apply to a good university.</p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t2g66f.png" alt="t2g66f.png"></p>
-<p>&lt;Image from <a href="https://krishthehrguide.files.wordpress.com/2018/05/dream-2.jpg" target="_blank" rel="noopener">Here</a> )</p>
-<p><strong>My final piece of advice is just do it instead of thinking too much.</strong> In the past, I sometimes had a plan, but possible imagined difficulties would cause me to give up easily. Now, instead, I just do it, and adjust the plan during the process, which I found is the most efficient way to take me to a successful outcome although it is true decisions have to be made on a case by case basis. For instance, several months ago, I hesitated as to whether I should learn the Python language, because it seemed very complicated and a step too far for me but I decided to try it. Indeed, initially, I could not understand any lines, but I did not give up as I may have done before. Spending more time and energy on it, I have finally learnt some useful skills, and during the process learnt, I began to study the subject area in more depth and I have been deeply involved in a waste disposal programme which I am finding very interesting.</p>
-<p><img src="https://s1.ax1x.com/2020/06/07/t24Vp9.png" alt="t24Vp9.png"></p>
-<p>&lt;Image from <a href="https://www.imsurfsentinel.com/wp-content/uploads/2017/11/just-do-it.jpg" target="_blank" rel="noopener">Here</a>)</p>
-<p>In conclusion, after experiencing the biggest failure of my life, I have spent some valuable time finding the reasons for it and applied the solutions to my current studies and life. These realisations and insights discussed above have improved not only my studies but also my life skills, offering me a much more positive and balanced outlook on how failure can be understood as a learning experience for self- improvement and be the springboard for success rather than a reason for self-pity and discouragement.</p>
-<p><a href="https://imgchr.com/i/t24Y6I" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/06/07/t24Y6I.png" alt="t24Y6I.png"></a></p>
-<p>&lt;Image from <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzLeU-KWVtkcZLBRNnG-xI1sn4oKm6Mf7zM0hS0oaOREDxWdJT&s" target="_blank" rel="noopener">Here</a>)</p>
+    <title>Hello World</title>
+    <url>/2019/12/12/hello-world/</url>
+    <content><![CDATA[<p>Hello, everyone! This is my first blog. </p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
       <categories>
-        <category>Activities &amp; Feelings</category>
+        <category>Testing</category>
       </categories>
-  </entry>
-  <entry>
-    <title>Strings</title>
-    <url>/2020/02/11/Strings/</url>
-    <content><![CDATA[<p>Yesterday, I have learnt more methods about how to deal with strings.</p>
-<h2 id="Create-a-password"><a href="#Create-a-password" class="headerlink" title="Create a password"></a>Create a password</h2><p>First of all, I wrote a code to help the users to create a password which satisfies the requirements:</p>
-<ol>
-<li><p>The length of the password MUST be greater than 8</p>
-</li>
-<li><p>The password MUST be a combination of letters &amp; numbers. Either there are only letters or there are only numbers will NOT be allowed.</p>
-</li>
-<li><p>There must be a Capital letter involved.<br>The codes are posted below:</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">       print(<span class="string">'Please enter your password'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">       password = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> len(password) &lt; <span class="number">8</span>: </span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'The length is less than 8,please try again'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">continue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.isalpha() <span class="keyword">or</span> password.isdecimal():</span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'The password should contain number &amp; letter'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">continue</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.isalnum():                                     <span class="comment"># number &amp; letter</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">pass</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">if</span> password.lower() != password:                           <span class="comment"># Capital letter</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">           <span class="keyword">break</span></span></pre></td></tr><tr><td class="code"><pre><span class="line">       <span class="keyword">else</span>:</span></pre></td></tr><tr><td class="code"><pre><span class="line">           print(<span class="string">'At least one capital letter should be involved'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">   print(<span class="string">'Successful log in'</span>)</span></pre></td></tr></table></figure>
-
-<p>The flow chart is shown below.</p>
-<p><a href="https://imgchr.com/i/1qM1f0" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/02/13/1qM1f0.png" alt="1qM1f0.png"></a></p>
-<p>At the beginning, the ‘while’ loop is used, because the number of times the users will try to create the password is unknown. Then, the ‘isalpha()’ , ‘isdecimal()’ and ‘isalnum()’ methods are used.</p>
-<p><strong>isalpha()</strong>: return True if the string only contains letters</p>
-<p><strong>isdecimal()</strong>: return True if the string only contains numbers</p>
-<p><strong>isalnum()</strong>: return True if the string only contains numbers &amp; letters                     </p>
-</li>
-</ol>
-<p>What is more, to decide whether a Capital letter is involved in the password, the lower() method is used. This helps to change all the letters in the string into the lowercase. If there is a Capital letter involved, the changed string will be different from the original string, while if there is no Capital letters involved, the alterred string will be exactly the same as before.  Note that the numbers will NOT change if the lower() method is used.</p>
-<h2 id="Replacing-word"><a href="#Replacing-word" class="headerlink" title="Replacing word"></a>Replacing word</h2><p>This programme helps users to find the content and replace it with another.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the content'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">content = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">lst = content.split()</span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the word that you want it to be replaced'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">word = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line">print(<span class="string">'Please enter the word that you want to replace it with'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">replacingWord = input()</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(len(lst)):</span></pre></td></tr><tr><td class="code"><pre><span class="line">    <span class="keyword">if</span> lst[i].lower() == word:</span></pre></td></tr><tr><td class="code"><pre><span class="line">        lst[i] = replacingWord</span></pre></td></tr><tr><td class="code"><pre><span class="line"><span class="string">' '</span>.join(lst)</span></pre></td></tr></table></figure>
-
-<ol>
-<li>Split the string into each word</li>
-<li>Find the word and replace it</li>
-<li>Join the list into compelete sentences</li>
-</ol>
-<p>The main idea is listed above, and there is an example below, which aims to replace the pronoun ‘which’ with ‘that’.</p>
-<p><img src="https://s2.ax1x.com/2020/02/13/1qN3VK.png" alt="1qN3VK.png"></p>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The feelings after attending the BPho</title>
-    <url>/2019/12/10/The-feelings-after-attending-the-BPho/</url>
-    <content><![CDATA[<p>On November 15th, I attended the BPho Physics competition. Although the content of the test was a little bit hard, I learned so much from the exam itself and the process of preparing for it. </p>
-<p>At the beginning, facing so many difficult questions, I didn’t know what to do. As I was an AS level student, some of the questions are the ones that I hadn’t met before. As a result, after solving some questions, I decided to separate all the questions from 2008 to 2018 into 5 categories in Section 1 and 8 categories in Section 2.</p>
-<p><a href="https://imgse.com/i/QDLzM8" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLzM8.png" alt="QDLzM8.png"></a><br><a href="https://imgse.com/i/QDLjRP" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2019/12/10/QDLjRP.png" alt="QDLjRP.png"></a></p>
-<p>Also, I made some comments, which is about some of my thinking process, on the side of the question.<img src="https://s2.ax1x.com/2019/12/10/QDOwod.png" alt="QDOwod.png"></p>
-<p>After taking part in this exam, I have learned 3 good habits: </p>
-<ul>
-<li><p><strong>Being persistent</strong>.  During the learning, not everything can be achieved without any obstacles. Although, once I wanted to give up, I kept telling myself ‘try again, try again’. Luckily, I did it, and regardless of the outcome, this spirit inspired me a lot.</p>
-</li>
-<li><p><strong>Being confident</strong>. At the beginning, I was not confident at all, because I can solve few problems. As time went by, I began to make some progress, so I became more confident. Latter,  I found that the more confident you are, the better the outcome will be, vice versa.</p>
-</li>
-<li><p><strong>Being ambitious</strong>. Before doing a task, a target should be built up, which guided me when I was hesitated. Setting up a higher goal gives me many incentives to learn.</p>
-<p>What is more, after doing a lot of questions, I found that Physics was quite interesting. Many things in our daily lives can be explained by Physics. For example, one day, on my way to school, a car passed by with its trumpet on. The pitch of which changed as the car moving. A week later, I knew this is called the Doppler Effect.</p>
-</li>
-</ul>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvSsK.png" alt="QDvSsK.png"></p>
-<p><img src="https://s2.ax1x.com/2019/12/10/QDvwo4.png" alt="QDvwo4.png"></p>
-<p>Physics is very interesting!</p>
-]]></content>
-      <categories>
-        <category>BPho</category>
-      </categories>
-      <tags>
-        <tag>BPho</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Visualising COVID-19 cases</title>
-    <url>/2020/05/09/Visualising-COVID-19-cases/</url>
-    <content><![CDATA[<p>Today, I have done some analysis on cases of COVID-19.</p>
-<p><img src="https://s1.ax1x.com/2020/05/10/Y1lwp8.png" alt="Y1lwp8.png"></p>
-<h2 id="Total-number-of-Confirmed-amp-Deaths"><a href="#Total-number-of-Confirmed-amp-Deaths" class="headerlink" title="Total number of Confirmed &amp; Deaths"></a>Total number of Confirmed &amp; Deaths</h2><p>The data was downloaded from ‘kaggle’ dataset.(<a href="https://www.kaggle.com/imdevskp/corona-virus-report" target="_blank" rel="noopener">https://www.kaggle.com/imdevskp/corona-virus-report</a>)</p>
-<p>It looks like this:</p>
-<p><a href="https://imgchr.com/i/Y1nj58" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1nj58.png" alt="Y1nj58.png"></a></p>
-<p>Among thousands of data, I was interested in cases in China, so I select the data from China.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">China = df[df[<span class="string">'Country/Region'</span>]==<span class="string">'China'</span>]</span></pre></td></tr><tr><td class="code"><pre><span class="line">China</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1udsA" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1udsA.png" alt="Y1udsA.png"></a></p>
-<p>There is still too much data, but they are all Chinese cases, so I decide to merge the data from the same province using ‘groupby()’ method, and then to find the total number of confirmed, deaths and recovered using ‘sum()’ method.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">provinces = China.groupby(<span class="string">'Province/State'</span>).sum()</span></pre></td></tr><tr><td class="code"><pre><span class="line">provinces</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1uOy9" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1uOy9.png" alt="Y1uOy9.png"></a></p>
-<p>Then, I try to plot a bar chart to see the relative number.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(province_index[<span class="string">'Province/State'</span>],province_index[<span class="string">'Confirmed'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1Kgk6" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1Kgk6.md.png" alt="Y1Kgk6.md.png"></a></p>
-<p>As shown in the graph, confirmed cases in Hubei Province is significantly greater than that in other areas, because Wuhan, the capital city of Hubei, is the center of the outbreak of this pandemic. However, confirmed cases in other areas cannot be clearly seen and compared, so I decided to plot another graph excluding Hubei province.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">drop_Hubei = province_index.drop(index=<span class="number">13</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">drop_Hubei</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/05/09/Y1Kj1g.png" alt="Y1Kj1g.png"></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(drop_Hubei[<span class="string">'Province/State'</span>],drop_Hubei[<span class="string">'Confirmed'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'Provinces'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Confirmed cases'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'Confirmed cases in China till May 8th'</span>)</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1MFhT" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1MFhT.png" alt="Y1MFhT.png"></a></p>
-<p>As shown in this graph, Guangdong province has the second largest number of confirmed cases, maybe due to the fact that it is a international city that has a great number of flow of people around the world every day, which increses the spread of the disease. </p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.bar(drop_Hubei[<span class="string">'Province/State'</span>],drop_Hubei[<span class="string">'Deaths'</span>])</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xticks(rotation=<span class="number">90</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.xlabel(<span class="string">'Provinces'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.ylabel(<span class="string">'Confirmed cases'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plt.title(<span class="string">'Deaths in China till May 8th'</span>)</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1M83D" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/09/Y1M83D.png" alt="Y1M83D.png"></a></p>
-<p>Furthermore, I also drew the number of  Deaths untill May 8th. As shown in the graph, although Guangdong has the second largest number of confirmed cases, the deaths in Guangdong province is not the second greatest. Instead, Henan has the highest number of deaths apart from Hubei, maybe because medical facilities are not enough in Henan, and doctors are not qualified as in Guangdong, meaning that the ability for Henan to deal with this COVID-19 is weaker.</p>
-<h2 id="Trend-from-Jan-22nd-to-May-8th"><a href="#Trend-from-Jan-22nd-to-May-8th" class="headerlink" title="Trend from Jan 22nd to May 8th"></a>Trend from Jan 22nd to May 8th</h2><p>I am a person born in Jiangsu province, so I am particularly interested in data in Jiangsu, and I chose cities around Jiangsu to analyse the trend.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = China.pivot(index=<span class="string">'Date'</span>, columns=<span class="string">'Province/State'</span>, values=<span class="string">'Confirmed'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">df1 = df[[<span class="string">'Jiangsu'</span>,<span class="string">'Beijing'</span>,<span class="string">'Shanghai'</span>,<span class="string">'Guangdong'</span>,<span class="string">'Zhejiang'</span>]]</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">covid_confirmed = df1</span></pre></td></tr><tr><td class="code"><pre><span class="line">covid_confirmed</span></pre></td></tr></table></figure>
-
-<p><a href="https://imgchr.com/i/Y1Q6JK" target="_blank" rel="noopener"><img src="https://s1.ax1x.com/2020/05/10/Y1Q6JK.png" alt="Y1Q6JK.png"></a></p>
-<p>Here, the pivot table is used to arrange the data.</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">plt.style.use(<span class="string">'fivethirtyeight'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot = covid_confirmed.plot(figsize=(<span class="number">14</span>,<span class="number">10</span>),linewidth=<span class="number">5</span>, legend=<span class="literal">True</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.grid(color=<span class="string">'#d4d4d4'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.set_xlabel(<span class="string">'Date'</span>)</span></pre></td></tr><tr><td class="code"><pre><span class="line">plot.set_ylabel(<span class="string">'Confirmed'</span>)</span></pre></td></tr></table></figure>
-
-<p><img src="https://s1.ax1x.com/2020/05/10/Y1QRQe.png" alt="Y1QRQe.png"></p>
-<p>As shown in the graph, the overal trend for 4 cities is the same, which is increasing rapidly at first, and tends to reach a plateau. Also, Jiangsu is the city that reaches a plateau at first among 4 cities, which means the Jiangsu government has done a great job reducing the spread out of this disease. </p>
-<p>The confirmed cases in many places in China tends to be constant, which means that as temperature increasing, the virus seems to be less and less active. Hopefully, the coronavirus will dissapear as soon as possible.</p>
-]]></content>
-      <categories>
-        <category>Data analysis</category>
-      </categories>
-      <tags>
-        <tag>COVID-19</tag>
-      </tags>
   </entry>
 </search>
