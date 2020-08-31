@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Python," />
+  <meta name="keywords" content="car," />
 
 
 
@@ -86,18 +86,22 @@
 
 
 
-<meta name="description" content="Recently, I learnt about some uses of ‘dictionary’ in Python. Menu &amp;amp; DictionaryThen, I wrote a programme to construct a menu. The code is shown below. 1print(&amp;apos;TP CAFE&amp;apos;.center(20,&amp;apos; &amp;apos;))2print(&amp;apos;-----">
-<meta name="keywords" content="Python">
+<meta name="description" content="Today, I have learnt some functions in two modules, nRF24 and Motion Processing Unit (MPU). nRF24 (Wireless RF Module)  The nRF24L01 is a wireless transceiver module, meaning each module can both send">
+<meta name="keywords" content="car">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dictionary">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;27&#x2F;Dictionary&#x2F;index.html">
+<meta property="og:title" content="nRF24 &amp; MPU">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;nRF24-MPU&#x2F;index.html">
 <meta property="og:site_name" content="Gu Yuxuan&#39;s blog">
-<meta property="og:description" content="Recently, I learnt about some uses of ‘dictionary’ in Python. Menu &amp;amp; DictionaryThen, I wrote a programme to construct a menu. The code is shown below. 1print(&amp;apos;TP CAFE&amp;apos;.center(20,&amp;apos; &amp;apos;))2print(&amp;apos;-----">
+<meta property="og:description" content="Today, I have learnt some functions in two modules, nRF24 and Motion Processing Unit (MPU). nRF24 (Wireless RF Module)  The nRF24L01 is a wireless transceiver module, meaning each module can both send">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;27&#x2F;1u1N5j.md.png">
-<meta property="og:updated_time" content="2020-01-31T12:11:54.682Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dOwx8H.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dOr7WD.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dOo82R.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dO7En0.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dOqq58.png">
+<meta property="og:updated_time" content="2020-08-31T09:03:37.107Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;s2.ax1x.com&#x2F;2020&#x2F;01&#x2F;27&#x2F;1u1N5j.md.png">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;s1.ax1x.com&#x2F;2020&#x2F;08&#x2F;31&#x2F;dOwx8H.png">
 
 
 
@@ -127,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/01/27/Dictionary/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/08/31/nRF24-MPU/"/>
 
 
 
 
 
-  <title>Dictionary | Gu Yuxuan's blog</title>
+  <title>nRF24 & MPU | Gu Yuxuan's blog</title>
   
 
 
@@ -294,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/27/Dictionary/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/31/nRF24-MPU/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Gu Yuxuan (Jesse Gu)">
@@ -311,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Dictionary</h1>
+          <h1 class="post-title" itemprop="name headline">nRF24 & MPU</h1>
         
 
         <div class="post-meta">
@@ -323,8 +327,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-27T17:55:09+08:00">
-                2020-01-27
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-31T15:41:52+08:00">
+                2020-08-31
               </time>
             
 
@@ -346,8 +350,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python/" itemprop="url" rel="index">
-                    <span itemprop="name">Python</span>
+                  <a href="/categories/car/" itemprop="url" rel="index">
+                    <span itemprop="name">car</span>
                   </a>
                 </span>
 
@@ -388,15 +392,37 @@
       
 
       
-        <p>Recently, I learnt about some uses of ‘dictionary’ in Python.</p>
-<h2 id="Menu-amp-Dictionary"><a href="#Menu-amp-Dictionary" class="headerlink" title="Menu &amp; Dictionary"></a>Menu &amp; Dictionary</h2><p>Then, I wrote a programme to <strong>construct a menu</strong>. The code is shown below.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'TP CAFE'</span>.center(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">2</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'--------------------'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">3</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'1. CAFE'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">4</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'2. Milk Tea'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">5</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'3. Ice Cream'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">6</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'4. Report'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">7</span></pre></td><td class="code"><pre><span class="line">print(<span class="string">'5. Quit'</span>.ljust(<span class="number">20</span>,<span class="string">' '</span>))</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">8</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">9</span></pre></td><td class="code"><pre><span class="line">menu=[<span class="string">'0'</span>,<span class="string">'CAFE'</span>,<span class="string">'Milk Tea'</span>,<span class="string">'Ice Cream'</span>,<span class="string">'Report'</span>,<span class="string">'Quit'</span>]</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">10</span></pre></td><td class="code"><pre><span class="line">order = &#123;&#125;</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">11</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'1'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">12</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'2'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">13</span></pre></td><td class="code"><pre><span class="line">order[<span class="string">'3'</span>]=<span class="number">0</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">14</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">15</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'-----------------'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">16</span></pre></td><td class="code"><pre><span class="line"></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">17</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">18</span></pre></td><td class="code"><pre><span class="line">tstamp = time.strftime(<span class="string">"%Y-%m-%d %H:%M:%S"</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">19</span></pre></td><td class="code"><pre><span class="line">print(tstamp)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">20</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">21</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">print</span> (<span class="string">'which one?'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">22</span></pre></td><td class="code"><pre><span class="line">    number = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">23</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">5</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">24</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (<span class="string">'Close...'</span>)</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">25</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">26</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">4</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">27</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">break</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">28</span></pre></td><td class="code"><pre><span class="line">    <span class="keyword">if</span> int(number) == <span class="number">1</span> <span class="keyword">or</span> int(number) == <span class="number">2</span> <span class="keyword">or</span> int(number) == <span class="number">3</span>:</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">29</span></pre></td><td class="code"><pre><span class="line">        <span class="keyword">print</span> (<span class="string">'how many '</span>+ menu[int(number)]+<span class="string">' do you want?'</span> )</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">30</span></pre></td><td class="code"><pre><span class="line">        quantity = input()</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">31</span></pre></td><td class="code"><pre><span class="line">        order[number] = order[number] + int(quantity)                <span class="comment">#update the dictionary</span></span></pre></td></tr><tr><td class="gutter"><pre><span class="line">32</span></pre></td><td class="code"><pre><span class="line">    </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">33</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'CAFE:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'1'</span>]) </span></pre></td></tr><tr><td class="gutter"><pre><span class="line">34</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Milk Tea:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'2'</span>])</span></pre></td></tr><tr><td class="gutter"><pre><span class="line">35</span></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (<span class="string">'Ice Cream:'</span>.ljust(<span class="number">20</span>,<span class="string">'-'</span>),order[<span class="string">'3'</span>])</span></pre></td></tr></table></figure>
-
-<p>In the first 7 lines, the categories of snakes are printed, during the process of which the <strong>‘center’ and ‘ljust’ methods</strong> are used to adjust the position of the text. In the following 6 lines, I construct a list called ‘menu’, which is used to include all kinds of snakes.__ A list is used due to the fact that there is an automatic mapping between the order and the corresponding snake, which makes it easier to call the element.__</p>
-<p>Then, the time is obtained from system, followed by a ‘while’ loop.__ By the way, the ‘while’ loop is used, because it allows users to input as many times as they want. __Afterwards, ‘if’ conditions are used to decide which item the user chooses. In the last ‘if’, the ‘order’ is treated as a ‘dictionary’, the ‘keys’ of which is the order number, and the value of which is the quantity of the chosen snake. At the end of the ‘if’ condition, the quantity of the snake chosen is updated.</p>
-<p>Finally, if the report is required to be printed, i.e. number 4 in the menu is chosen, the quantity is printed with corresponding snakes. If the user doesn’t want to have the report, i.e. number 5 is chosen, the interface will be closed. <strong>By the way, the first condition is to judge whether the number is  5, followed by 4, and then 1,2,3, otherwise, all the codes will be executed till 4 and 5, which makes the condition meaningless.</strong></p>
-<p>The result of the programme is shown below.</p>
-<p><a href="https://imgchr.com/i/1u1N5j" target="_blank" rel="noopener"><img src="https://s2.ax1x.com/2020/01/27/1u1N5j.md.png" alt="1u1N5j.md.png"></a> </p>
+        <p>Today, I have learnt some functions in two modules, nRF24 and Motion Processing Unit (MPU).</p>
+<h2 id="nRF24-Wireless-RF-Module"><a href="#nRF24-Wireless-RF-Module" class="headerlink" title="nRF24 (Wireless RF Module)"></a>nRF24 (Wireless RF Module)</h2><p><img src="https://s1.ax1x.com/2020/08/31/dOwx8H.png" alt="dOwx8H.png"></p>
+<blockquote>
+<p>The n<strong>RF24L01 is a wireless transceiver module</strong>, meaning each module can both send as well as receive data. They operate in the frequency of 2.4GHz, which falls under the ISM band and hence it is legal to use in almost all countries for engineering applications. The modules when operated efficiently can cover a distance of 100 meters (200 feet) which makes it a great choice for all wireless remote controlled projects.</p>
+</blockquote>
+<ul>
+<li>2.4GHz RF transceiver Module</li>
+<li>Communication Protocol: SPI (Serial Peripheral Interface)</li>
+</ul>
+<p>I have connected it with Arduino to receive signals from MPU that are used to transmit signals. MPU consists of gyroscope and accelerometer. Gyroscope is used to detect the rotation of the device, and accelerometer is used to detect the acceleration of the device.</p>
+<h2 id="Motion-Processing-Unit-MPU"><a href="#Motion-Processing-Unit-MPU" class="headerlink" title="Motion Processing Unit (MPU)"></a>Motion Processing Unit (MPU)</h2><p><img src="https://s1.ax1x.com/2020/08/31/dOr7WD.png" alt="dOr7WD.png"></p>
+<ul>
+<li>MEMS 3-aixs accelerometer and 3-axis gyroscope values combined</li>
+<li>Communication : I2C protocol</li>
+</ul>
+<p>(<strong>I2C</strong> supports multiple devices on the same bus without any additional select lines (work on the basis of device address). <strong>SPI</strong> requires additional signal (slave select lines) lines to manage multiple devices on the same bus. <strong>I2C</strong> is better for long-distance. <strong>SPI</strong> is better for a short distance.)</p>
+<blockquote>
+<p>The MPU6050 is a Micro Electro-Mechanical Systems (<strong>MEMS</strong>) which consists of a 3-axis Accelerometer and 3-axis Gyroscope inside it. This helps us to measure acceleration, velocity, orientation, displacement and many other motion related parameter of a system or object. This module also has a (DMP) Digital Motion Processor inside it which is powerful enough to perform complex calculation and thus free up the work for Microcontroller</p>
+</blockquote>
+<p><strong>UART: (Universal Asynchronous Reception and Transmission )</strong>  –&gt; No clock</p>
+<p><img src="https://s1.ax1x.com/2020/08/31/dOo82R.png" alt="dOo82R.png"></p>
+<p><strong>I2C or IIC (Inter-Integrated Circuit)</strong> –&gt; has clock, communicate through address </p>
+<p><img src="https://s1.ax1x.com/2020/08/31/dO7En0.png" alt="dO7En0.png"></p>
+<p><strong>SPI (Serial Peripheral Interface)</strong> –&gt; has clock, communicate by pulling down voltage level –&gt; one more device, one more line</p>
+<p><img src="https://s1.ax1x.com/2020/08/31/dOqq58.png" alt="dOqq58.png"></p>
+<p>SS1,SS2,SS3 –&gt; Chip Enable （片选）</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://components101.com/wireless/nrf24l01-pinout-features-datasheet" target="_blank" rel="noopener">https://components101.com/wireless/nrf24l01-pinout-features-datasheet</a></li>
+<li><a href="https://components101.com/sensors/mpu6050-module" target="_blank" rel="noopener">https://components101.com/sensors/mpu6050-module</a></li>
+</ul>
 
       
     </div>
@@ -414,7 +440,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Python/" rel="tag"># Python</a>
+            <a href="/tags/car/" rel="tag"># car</a>
           
         </div>
       
@@ -427,8 +453,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/09/Feelings-after-getting-the-award/" rel="next" title="Feelings after getting the award">
-                <i class="fa fa-chevron-left"></i> Feelings after getting the award
+              <a href="/2020/08/20/How-to-control-the-motion-of-the-smart-car/" rel="next" title="How to control the motion of the smart car?">
+                <i class="fa fa-chevron-left"></i> How to control the motion of the smart car?
               </a>
             
           </div>
@@ -436,10 +462,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/01/31/My-participation-in-2019-nCoV-Prevention-Treatment-Project/" rel="prev" title="My participation in 2019-nCoV Prevention & Treatment Project">
-                My participation in 2019-nCoV Prevention & Treatment Project <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -581,7 +603,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Menu-amp-Dictionary"><span class="nav-number">1.</span> <span class="nav-text">Menu &amp; Dictionary</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nRF24-Wireless-RF-Module"><span class="nav-number">1.</span> <span class="nav-text">nRF24 (Wireless RF Module)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Motion-Processing-Unit-MPU"><span class="nav-number">2.</span> <span class="nav-text">Motion Processing Unit (MPU)</span></a></li></ol></div>
             
 
           </div>
