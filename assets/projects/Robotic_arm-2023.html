@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Violin Performance in 2023</title>
+  <title>Remote Control of Robotic Arm in 2023</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -74,10 +74,10 @@
       <div class="container">
 
         <div class="d-flex justify-content-between align-items-center">
-          <h2>Activities</h2>
+          <h2>Projects</h2>
           <ol>
             <li><a href="../../index.html">Home</a></li>
-            <li>Activities</li>
+            <li>Projects</li>
           </ol>
         </div>
 
@@ -95,15 +95,19 @@
               <div class="swiper-wrapper align-items-center">
 
                 <div class="swiper-slide">
-                  <img src="../img/activities/Violin-2023-1.jpg" alt="">
+                  <img src="../img/projects/robotic_arm1.png" alt="">
                 </div>
 
                 <div class="swiper-slide">
-                  <img src="../img/activities/Violin-2023-2.jpg" alt="">
+                  <img src="../img/projects/robotic_arm2.png" alt="">
                 </div>
 
                 <div class="swiper-slide">
-                  <img src="../img/activities/Violin-2023-3.jpg" alt="">
+                  <img src="../img/projects/robotic_arm3.png" alt="">
+                </div>
+
+                <div class="swiper-slide">
+                  <img src="../img/projects/robotic_arm4.png" alt="">
                 </div>
 
               </div>
@@ -113,21 +117,25 @@
 
           <div class="col-lg-4">
             <div class="portfolio-info">
-              <h3>Activity information [<a href="https://youtu.be/2NrQIz41Xvo">YouTube video</a>]</h3>
+              <h3>Project information</h3>
               <ul>
-                <li><strong>Category</strong>: Violin </li>
+                <li><strong>Name</strong>: Remote Control of Robotic Arm [ <a href="https://github.com/guyuxuan9/UROP_robotic_arm">Github Link</a> ]</li>
+                <li><strong>Category</strong>: Undergraduate Research Opportunities Programme (UROP)</li>
                 <li><strong>Year</strong>: 2023</li>
                 <li><strong>Location</strong>: London, UK</li>
               </ul>
             </div>
             <div class="portfolio-description">
-              <h2>Cultural Harmonies: Bridging East and West Through Music</h2>
+              <h2>Remote Control of Colour-tracking Robotic Rrm with ROS2 Integration</h2>
               <p>
-                Embracing my role within the <b>Imperial Chamber Music Society</b>, 
-                I eagerly contributed to the society's Christmas concert. 
-                During the event, I showcased my musical prowess by performing a captivating Chinese piece, "Pastoral Song," artfully presented in English. 
+                I developed a 4-DOF robotic arm with color-tracking capabilities, utilizing remote control within the ROS2 framework. 
+                This project integrated a USB camera as a sensor within the feedback loop to effectively manage bus servo motors. 
                 <br><br>
-                This performance was not only a harmonious expression of my musical talents but also a sincere attempt to forge a cultural connection between the East and the West.
+                Geometric inverse kinematics analysis was employed to calculate joint variables based on end-effector position and orientation. 
+                To control the motors, a Raspberry Pi was employed to transmit commands through UART while simultaneously publishing image frames to ROS2 topics. 
+                <br><br>
+                Additionally, I implemented controller separation on a remote machine, allowing communication with the local node through the ROS2 network, 
+                and subsequently conducted an in-depth analysis of stability margins. Furthermore, I built a 2nd order transfer function model by exploring the step response of one of the motors.
               </p>
             </div>
           </div>
