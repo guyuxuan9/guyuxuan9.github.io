@@ -479,6 +479,10 @@ section {
 /*--------------------------------------------------------------
 # Resume
 --------------------------------------------------------------*/
+.download-button-container {
+  display: inline-block;
+}
+
 .resume .resume-title {
   font-size: 26px;
   font-weight: 700;
