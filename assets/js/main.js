@@ -259,4 +259,24 @@
    */
   new PureCounter();
 
+  /**
+   * Get the last updated time
+   */
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the current date and time
+    var currentDate = new Date();
+    // Format the date as you want (example: "MM/DD/YYYY HH:mm")
+    var formattedDate = currentDate.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+     // hour: 'numeric',
+     // minute: 'numeric',
+      //hour12: false
+    });
+    // Update the element with id "last-updated" with the formatted date
+    document.getElementById('last-updated').textContent = formattedDate;
+  });
+ 
+
 })()
