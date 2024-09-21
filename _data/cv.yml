@@ -39,15 +39,24 @@
       year: 2024.03 - 2024.09
       description: Utilised Graph Neural Network (GNN) to model multiphase fluid flow dynamics for CO2 geological storage, hydrogen storage, and fuel cells using real experimental data
 
-    - title: Undergraduate Researcher
+    - title: Undergraduate Research Opportunities Program (UROP)
       institution: Imperial College London, London, UK.
       year: 2023.07 - 2023.09
       description:
         - Developed a colour-tracking 4-DOF robotic arm using remote control within ROS2 framework.
         - Derived forward and inverse kinematics and integrated a USB camera as a sensor within feedback loop.
         - Utilised a Raspberry Pi for motor control via UART, implemented a remote controller and conducted stability analysis.
-
-
+    
+    - title: UNDERGRADUATE TEACHING ASSISTANT (UTA)
+      institution: Imperial College London, London, UK
+      year: 2023.09 - 2024.04
+      description: 
+        - title: Mentored and supported junior students during the classes and labs of the following modules.
+          contents:
+          - Mathematics 1A (ELEC40012A)
+          - Probability and Statistics (ELEC50011B)
+          - Control systems (ELEC50004)
+      
     - title: Software Engineer
       institution: Evotrack, London, UK
       year: 2022.07 - 2022.09
