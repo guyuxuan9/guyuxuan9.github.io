@@ -53,6 +53,7 @@
       description: 
         - title: Mentored and supported junior students during the classes and labs of the following modules.
           contents:
+          - Machine learning (ELEC60019)
           - Mathematics 1A (ELEC40012A)
           - Probability and Statistics (ELEC50011B)
           - Control systems (ELEC50004)
