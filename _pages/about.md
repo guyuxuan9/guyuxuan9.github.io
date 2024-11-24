@@ -21,6 +21,6 @@ social: true # includes social icons at the bottom of the page
 
 Welcome to my website! 
 
-My name is Yuxuan Gu, and I am currently pursuing an MEng degree in Electrical and Information Engineering (EIE) at [Imperial College London](https://www.imperial.ac.uk/). As a final-year student, I am deeply passionate about both hardware and software engineering, with interests ranging from CPU design and machine learning algorithms to robotics and control systems. My dedication to this field has driven me to excel academically, placing me in the **top 5%** of my cohort and earning me the **Dean's list** honor for the **past three consecutive years**.
+My name is Yuxuan Gu, and I am currently pursuing an MEng degree in Electrical and Information Engineering (EIE) at [Imperial College London](https://www.imperial.ac.uk/). As a final-year student, I am deeply passionate about both hardware and software engineering, with interests ranging from machine learning and CPU design to robotics and control systems. My dedication to this field has driven me to excel academically, placing me in the **top 5%** of my cohort and earning me the **Dean's list** honor for the **past three consecutive years**.
 
 Outside of my studies, I enjoy playing badminton and the violin (see [my performance](https://www.youtube.com/watch?v=2NrQIz41Xvo) at 2022 Christmas concerts with the Chamber Music Society in Imperial College London). Engaging in music and sports allows me to relax, express my creativity, and find inspiration.
