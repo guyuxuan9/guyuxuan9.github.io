@@ -5,16 +5,19 @@
       institution: Imperial College London, London, UK
       year: 2021-2025
       description: 
-        - top 5%, Dean's list in Years 1 and 2 and 3
+        - Final Year Project "Efficient Compression of Large Language Models for Edge Devices through Tensor Decompositions", supervised by Prof. Danilo Mandic
+        - Top 5%, Dean's list in Years 1 and 2 and 3
         - title: Main moduels
           contents:
-          - Advanced Computer Architecture (COMP60001)
-          - Deep learning (ELEC96033)
-          - Computer vision (COMP60006)
-          - Machine learning (ELEC60019)
-          - Statistical signal processing and inference (ELEC60002)
-          - Control systems (ELEC50004, ELEC60008)
-          - Signals and systems (ELEC50009)
+          - Probability and Stochastic Processes
+          - Optimisation
+          - Statistical Signal Processing and Inference
+          - Deep Learning
+          - Computer Vision
+          - Machine learning
+          - Advanced Computer Architecture
+          - Control Systems
+          - Signals and Systems
         
     - title: A Levels & IGCSE
       institution: Jinling High School, Nanjing, China
@@ -71,16 +74,16 @@
   contents:
     - year: 2024
       items:
-        - Year 3 at Imperial - Dean's List
+        - "Year 3 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2024.pdf' target='_blank'>[Certificate]</a>"
     - year: 2023
       items:
-        - Year 2 at Imperial - Dean's List
+        - "Year 2 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2023.pdf' target='_blank'>[Certificate]</a>"
     - year: 2022
       items:
-        - Year 1 at Imperial - Dean's List
+        - "Year 1 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2022.pdf' target='_blank'>[Certificate]</a>"
     - year: 2021
       items:
-        - A-Level - Cambridge Outstanding Learner Award (Top 1 in China)
+        - "A-Level - Cambridge Outstanding Learner Award (Top 1 in China) <a href='/assets/pdf/certificate/Outstanding_Cambridge_Learner_Award.pdf' target='_blank'>[Certificate]</a>"
 
 - title: Other Interests
   type: list
