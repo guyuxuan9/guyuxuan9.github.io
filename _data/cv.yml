@@ -1,12 +1,17 @@
 - title: Education
   type: time_table
   contents:
+    - title: Electrical and Electronic Engineering Research (PhD)
+      institution: Imperial College London, London, UK
+      year: 2025-2029
+      description: "Topics: generative artificial intelligence (genAI) for natural language processing (NLP), AI for finance"
     - title: MEng of Electrical and Information Engineering
       institution: Imperial College London, London, UK
       year: 2021-2025
       description: 
+        - First class honour
+        - Top 5%, Dean's list in Years 2022,2023,2024 and 2025
         - Final Year Project "Efficient Compression of Large Language Models for Edge Devices through Tensor Decompositions", supervised by Prof. Danilo Mandic
-        - Top 5%, Dean's list in Years 1 and 2 and 3
         - title: Main moduels
           contents:
           - Probability and Stochastic Processes
@@ -33,9 +38,7 @@
       institution: arm, Cambridge, UK
       year: 2024.04 - 2024.09
       description:
-        - Helped Central Engineering team design and develop a co-processor that accelerates matrix multiplication for machine learning tasks.
-        - Captured RTL events for performance modeling.
-        - Optimised decoders for better power, performance, and area (PPA) trade-off.
+        - Helped Central Engineering (CE) team design and develop a co-processor that accelerates matrix multiplication for machine learning tasks.
 
     - title: Part-time Machine Learning Undergraduate Researcher
       institution: Imperial College London, London, UK
@@ -47,8 +50,6 @@
       year: 2023.07 - 2023.09
       description:
         - Developed a colour-tracking 4-DOF robotic arm using remote control within ROS2 framework.
-        - Derived forward and inverse kinematics and integrated a USB camera as a sensor within feedback loop.
-        - Utilised a Raspberry Pi for motor control via UART, implemented a remote controller and conducted stability analysis.
     
     - title: UNDERGRADUATE TEACHING ASSISTANT (UTA)
       institution: Imperial College London, London, UK
@@ -66,24 +67,29 @@
       institution: Evotrack, London, UK
       year: 2022.07 - 2022.09
       description:
-        - Analysed usage data of E-vehicles charging stations in Paris and ran k-means clustering to divide stations into clusters.
-        - Achieved 90% accuracy in station utilization prediction using Gradient Boosting models.
+        - Applied machine learning (ML) approaches to analyse and forcast the utilisation of e-vehicle charging stations.
 
 - title: Honors and Awards
   type: time_table
   contents:
+    - year: 2025
+      items:
+        - Henry Ford II Scholar Award in Electrical Engineering (awarded annually to a student with the best academic record based on the final first degree examinations continuing in the Department to pursue a PhD)
+    - year: 2025
+      items:
+        - Dean's List (awarded to top 10% of the cohort)
     - year: 2024
       items:
-        - "Year 3 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2024.pdf' target='_blank'>[Certificate]</a>"
+        - Dean's List (awarded to top 10% of the cohort)
     - year: 2023
       items:
-        - "Year 2 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2023.pdf' target='_blank'>[Certificate]</a>"
+        - Dean's List (awarded to top 10% of the cohort)
     - year: 2022
       items:
-        - "Year 1 at Imperial - Dean's List <a href='/assets/pdf/certificate/Deans_list2022.pdf' target='_blank'>[Certificate]</a>"
+        - Dean's List (awarded to top 10% of the cohort)
     - year: 2021
       items:
-        - "A-Level - Cambridge Outstanding Learner Award (Top 1 in China) <a href='/assets/pdf/certificate/Outstanding_Cambridge_Learner_Award.pdf' target='_blank'>[Certificate]</a>"
+        - A-Level - Cambridge Outstanding Learner Award (awarded to Top 1 in China)
 
 - title: Other Interests
   type: list
