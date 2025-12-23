@@ -9,11 +9,11 @@ category: 2022
 ---
 
 # Activity information:
-- **Category**: Christmas concert organised by Imperial Chamber Music Society (see [YouTube video](https://www.youtube.com/watch?v=2NrQIz41Xvo))
+- **Category**: Christmas concert organised by Imperial Chamber Music Society ()
 - **Year**: 2022
 - **Location**: Imperial College London, UK
 
-Embracing my role in the Imperial Chamber Music Society, I eagerly took part in our Christmas concert, where I performed the beautiful Chinese piece, 'Pastoral Song,' adapted in English. This performance was a wonderful way to share music and create a meaningful cultural bridge between East and West.
+I took part in the Christmas concert hosted by Imperial Chamber Music Society, where I performed a Chinese piece 'Pastoral Song'🎻. See [YouTube video](https://www.youtube.com/watch?v=2NrQIz41Xvo).
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">

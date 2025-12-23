@@ -5,7 +5,7 @@ permalink: /activities/
 description: 
 nav: true
 nav_order: 3
-display_categories: [2022, 2021]
+display_categories: [2025, 2022, 2021]
 horizontal: false
 ---
 
