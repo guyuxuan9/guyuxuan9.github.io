@@ -2,7 +2,7 @@
 layout: page
 title: Summer Concert
 description: 
-img: assets/img/summer_concert2026/photo1.jpg
+img: assets/img/summer_concert2026/photo1.JPG
 importance: 1
 category: 2026
 # related_publications: true
@@ -16,9 +16,8 @@ category: 2026
   <div class="col-md-6 mt-3">
     {% include figure.liquid
        loading="eager"
-       path="assets/img/summer_concert2026/photo1.jpg"
+       path="assets/img/summer_concert2026/photo1.JPG"
        class="img-fluid rounded z-depth-1"
     %}
   </div>
 </div>
-
