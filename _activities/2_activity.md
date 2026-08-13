@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Imperial Chamber Music Society
+title: Winter Concert
 description: 
 img: assets/img/Christmas-concert/Violin-2023-1.jpg
 importance: 1
@@ -9,7 +9,6 @@ category: 2022
 ---
 
 # Activity information:
-- **Category**: Christmas concert organised by Imperial Chamber Music Society ()
 - **Year**: 2022
 - **Location**: Imperial College London, UK
 
